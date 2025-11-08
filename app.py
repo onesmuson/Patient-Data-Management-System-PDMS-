@@ -5,8 +5,9 @@ import os
 app = Flask(__name__)
 app.secret_key = 'pdms_secret_key'
 
-# Use SQLite for simplicity, database file will be in the same folder
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pdms.sqlite'
+# SQLite database in the same folder
+db_path = os.path.join(os.path.dirname(__file__), 'pdms.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -14,8 +15,8 @@ db = SQLAlchemy(app)
 # ----------------- MODELS ----------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(50))
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(50), nullable=False)
 
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,9 +25,18 @@ class Patient(db.Model):
     gender = db.Column(db.String(10))
     condition = db.Column(db.String(200))
 
-# Initialize the database automatically if it doesn't exist
+# ----------------- DATABASE INIT ----------------------
 with app.app_context():
     db.create_all()
+
+    # Add default admin if not exists
+    if not User.query.filter_by(username='admin').first():
+        admin = User(username='admin', password='admin123')
+        db.session.add(admin)
+        db.session.commit()
+        print("Default admin created: username='admin', password='admin123'")
+    else:
+        print("Admin user already exists")
 
 # ----------------- ROUTES ----------------------
 @app.route('/')
