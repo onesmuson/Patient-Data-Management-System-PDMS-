@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto; background: #222; padding: 20px; border-radius: 10px;">
+    <h2 style="text-align: center;">Add Patient</h2>
+
+    {% if error %}
+        <p style="color: red; text-align: center;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+        <p style="color: lightgreen; text-align: center;">{{ success }}</p>
+    {% endif %}
+
+    <form method="POST">
+        <label>Full Name:</label><br>
+        <input type="text" name="name" style="width: 100%; padding: 8px;"><br><br>
+
+        <label>Age:</label><br>
+        <input type="number" name="age" style="width: 100%; padding: 8px;"><br><br>
+
+        <label>Gender:</label><br>
+        <select name="gender" style="width: 100%; padding: 8px;">
+            <option value="">Select Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+        </select><br><br>
+
+        <label>Condition:</label><br>
+        <textarea name="condition" style="width: 100%; padding: 8px;" rows="3"></textarea><br><br>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #4CAF50; color: white;">Add Patient</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 20px;">
+    <h1>📊 Patient Reports</h1>
+    <p>This section will display reports based on patient data.</p>
+
+    {% if patients %}
+    <h3>Total Patients: {{ patients|length }}</h3>
+
+    <ul>
+        {% set male = patients | selectattr("gender", "equalto", "Male") | list %}
+        {% set female = patients | selectattr("gender", "equalto", "Female") | list %}
+        <li>👨 Male Patients: {{ male|length }}</li>
+        <li>👩 Female Patients: {{ female|length }}</li>
+    </ul>
+    {% else %}
+    <p>No patient data to generate reports.</p>
+    {% endif %}
+</div>
+{% endblock %}

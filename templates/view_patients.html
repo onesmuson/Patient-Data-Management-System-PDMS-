@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding: 20px;">
+    <h1>👩‍⚕️ View All Patients</h1>
+
+    {% if patients %}
+    <table border="1" cellpadding="10" cellspacing="0" style="width:100%; background:#222; color:white; border-collapse: collapse;">
+        <tr style="background:#444;">
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Condition</th>
+        </tr>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.full_name }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
+            <td>{{ patient.condition }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No patient records found.</p>
+    {% endif %}
+</div>
+{% endblock %}
