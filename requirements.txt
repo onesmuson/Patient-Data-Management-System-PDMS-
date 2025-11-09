@@ -5,3 +5,4 @@ Flask-SQLAlchemy==3.0.3
 SQLAlchemy==1.4.50
 WTForms==3.0.1
 gunicorn
+psycopg2-binary
