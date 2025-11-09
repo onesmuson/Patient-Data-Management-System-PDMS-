@@ -2,11 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__)
+# Explicitly set the templates folder
+app = Flask(__name__, template_folder='templates')
 app.secret_key = 'pdms_secret_key'
 
 # ----------------- DATABASE ----------------------
-# Use PostgreSQL on Render
+# Use PostgreSQL on Render, fallback to default URL if env var missing
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'DATABASE_URL',
     'postgresql://patient_data_management_system_db_user:EKha6G658Z6b1pKs5YmYcY80cOOGqxtJ@dpg-d484gb24d50c738ht300-a/patient_data_management_system_db'
