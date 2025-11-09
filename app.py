@@ -5,9 +5,9 @@ import os
 app = Flask(__name__)
 app.secret_key = 'pdms_secret_key'
 
-# SQLite database in the same folder
-db_path = os.path.join(os.path.dirname(__file__), 'pdms.sqlite')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+# ----------------- DATABASE CONFIG ----------------------
+# Use PostgreSQL database from Render environment variable
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -29,14 +29,14 @@ class Patient(db.Model):
 with app.app_context():
     db.create_all()
 
-    # Add default admin if not exists
+    # Add default admin user if not exists
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', password='admin123')
         db.session.add(admin)
         db.session.commit()
-        print("Default admin created: username='admin', password='admin123'")
+        print("✅ Default admin created: username='admin', password='admin123'")
     else:
-        print("Admin user already exists")
+        print("ℹ️ Admin user already exists.")
 
 # ----------------- ROUTES ----------------------
 @app.route('/')
@@ -94,5 +94,6 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# ----------------- RUN APP ----------------------
 if __name__ == '__main__':
     app.run()
