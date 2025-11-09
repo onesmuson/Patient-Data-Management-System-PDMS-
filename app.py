@@ -1,21 +1,21 @@
- from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-# ----------------- APP SETUP ----------------------
-# Explicitly set the templates folder
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates')  # explicit templates folder
 app.secret_key = 'pdms_secret_key'
 
-# ----------------- DATABASE ----------------------
-# Use local SQLite database
-db_path = os.path.join(os.path.dirname(__file__), 'pdms.sqlite')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+# ---------------- DATABASE -------------------
+# Use Render PostgreSQL URL from env
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'DATABASE_URL',
+    'sqlite:///pdms.sqlite'  # fallback for local testing
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# ----------------- MODELS ----------------------
+# ---------------- MODELS ---------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -28,20 +28,16 @@ class Patient(db.Model):
     gender = db.Column(db.String(10))
     condition = db.Column(db.String(200))
 
-# ----------------- DATABASE INIT ----------------------
+# ---------------- INIT DB -------------------
 with app.app_context():
     db.create_all()
-
-    # Add default admin if not exists
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', password='admin123')
         db.session.add(admin)
         db.session.commit()
-        print("Default admin created: username='admin', password='admin123'")
-    else:
-        print("Admin user already exists")
+        print("Admin created: admin/admin123")
 
-# ----------------- ROUTES ----------------------
+# ---------------- ROUTES --------------------
 @app.route('/')
 def login():
     return render_template('login.html')
@@ -97,6 +93,5 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# ----------------- RUN APP ----------------------
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
