@@ -1,17 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
+# ----------------- APP SETUP ----------------------
 # Explicitly set the templates folder
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'pdms_secret_key'
 
 # ----------------- DATABASE ----------------------
-# Use PostgreSQL on Render, fallback to default URL if env var missing
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL',
-    'postgresql://patient_data_management_system_db_user:EKha6G658Z6b1pKs5YmYcY80cOOGqxtJ@dpg-d484gb24d50c738ht300-a/patient_data_management_system_db'
-)
+# Use local SQLite database
+db_path = os.path.join(os.path.dirname(__file__), 'pdms.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -98,5 +97,6 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# ----------------- RUN APP ----------------------
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
