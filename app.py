@@ -5,9 +5,12 @@ import os
 app = Flask(__name__)
 app.secret_key = 'pdms_secret_key'
 
-# ----------------- DATABASE CONFIG ----------------------
-# Use PostgreSQL database from Render environment variable
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# ----------------- DATABASE ----------------------
+# Use PostgreSQL on Render
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'DATABASE_URL',
+    'postgresql://patient_data_management_system_db_user:EKha6G658Z6b1pKs5YmYcY80cOOGqxtJ@dpg-d484gb24d50c738ht300-a/patient_data_management_system_db'
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -29,14 +32,14 @@ class Patient(db.Model):
 with app.app_context():
     db.create_all()
 
-    # Add default admin user if not exists
+    # Add default admin if not exists
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', password='admin123')
         db.session.add(admin)
         db.session.commit()
-        print("✅ Default admin created: username='admin', password='admin123'")
+        print("Default admin created: username='admin', password='admin123'")
     else:
-        print("ℹ️ Admin user already exists.")
+        print("Admin user already exists")
 
 # ----------------- ROUTES ----------------------
 @app.route('/')
@@ -94,6 +97,5 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# ----------------- RUN APP ----------------------
 if __name__ == '__main__':
     app.run()
