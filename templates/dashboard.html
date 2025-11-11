@@ -4,12 +4,9 @@
 
 <p>Welcome to the Patient Data Management System Dashboard!</p>
 
-<div style="margin: 20px 0;">
-    <a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
-    <a href="{{ url_for('view_patients') }}" class="btn">View Patients</a>
-    <a href="{{ url_for('reports') }}" class="btn">View Reports</a>
-    <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
-</div>
+<a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
+<a href="{{ url_for('view_patients') }}" class="btn">View Patients</a>
+<a href="{{ url_for('reports') }}" class="btn">View Reports</a>
 
 <hr>
 
@@ -22,8 +19,7 @@
         <th>Full Name</th>
         <th>Age</th>
         <th>Gender</th>
-        <th>Diagnosis</th>
-        <th>Treatment</th>
+        <th>Condition</th>
     </tr>
     {% for patient in patients %}
     <tr>
@@ -31,8 +27,7 @@
         <td>{{ patient.full_name }}</td>
         <td>{{ patient.age }}</td>
         <td>{{ patient.gender }}</td>
-        <td>{{ patient.diagnosis or "N/A" }}</td>
-        <td>{{ patient.treatment or "N/A" }}</td>
+        <td>{{ patient.condition }}</td>
     </tr>
     {% endfor %}
 </table>
