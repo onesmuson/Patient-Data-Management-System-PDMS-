@@ -40,6 +40,8 @@ with app.app_context():
 # ---------------- ROUTES --------------------
 @app.route('/')
 def login():
+    if 'username' in session:
+        return redirect(url_for('dashboard'))
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -92,22 +94,22 @@ def reports():
 def change_password():
     if 'username' not in session:
         return redirect(url_for('login'))
-    
+
     error = None
     success = None
     user = User.query.filter_by(username=session['username']).first()
-    
+
     if request.method == 'POST':
         old_password = request.form['old_password']
         new_password = request.form['new_password']
-        
+
         if not check_password_hash(user.password, old_password):
             error = "Old password is incorrect!"
         else:
             user.password = generate_password_hash(new_password)
             db.session.commit()
             success = "Password updated successfully!"
-    
+
     return render_template('change_password.html', error=error, success=success)
 
 @app.route('/logout')
@@ -115,5 +117,6 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# ---------------- RUN APP -------------------
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
