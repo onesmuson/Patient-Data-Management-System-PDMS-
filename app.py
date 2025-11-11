@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+from datetime import datetime
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'pdms_secret_key'
@@ -27,6 +28,15 @@ class Patient(db.Model):
     age = db.Column(db.Integer)
     gender = db.Column(db.String(10))
     condition = db.Column(db.String(200))
+    medical_histories = db.relationship('MedicalHistory', backref='patient', cascade="all, delete-orphan")
+
+class MedicalHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    visit_date = db.Column(db.Date)
+    diagnosis = db.Column(db.String(200))
+    treatment = db.Column(db.String(200))
+    notes = db.Column(db.Text)
 
 # ---------------- INIT DB -------------------
 with app.app_context():
@@ -54,6 +64,23 @@ def do_login():
         return redirect(url_for('dashboard'))
     return render_template('login.html', error="Invalid login credentials!")
 
+# ---------------- Registration -------------------
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if User.query.filter_by(username=username).first():
+            error = "Username already exists!"
+            return render_template('register.html', error=error)
+        hashed_password = generate_password_hash(password)
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+# ---------------- Dashboard -------------------
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
@@ -61,6 +88,7 @@ def dashboard():
     patients = Patient.query.all()
     return render_template('dashboard.html', patients=patients)
 
+# ---------------- Patient -------------------
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if 'username' not in session:
@@ -90,6 +118,38 @@ def reports():
     patients = Patient.query.all()
     return render_template('reports.html', patients=patients)
 
+# ---------------- Medical History -------------------
+@app.route('/medical_history/<int:patient_id>')
+def medical_history(patient_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    patient = Patient.query.get_or_404(patient_id)
+    histories = MedicalHistory.query.filter_by(patient_id=patient_id).all()
+    return render_template('medical_history.html', patient=patient, histories=histories)
+
+@app.route('/add_medical_history/<int:patient_id>', methods=['GET', 'POST'])
+def add_medical_history(patient_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    patient = Patient.query.get_or_404(patient_id)
+    if request.method == 'POST':
+        visit_date = datetime.strptime(request.form['visit_date'], "%Y-%m-%d")
+        diagnosis = request.form['diagnosis']
+        treatment = request.form['treatment']
+        notes = request.form['notes']
+        history = MedicalHistory(
+            patient_id=patient_id,
+            visit_date=visit_date,
+            diagnosis=diagnosis,
+            treatment=treatment,
+            notes=notes
+        )
+        db.session.add(history)
+        db.session.commit()
+        return redirect(url_for('medical_history', patient_id=patient_id))
+    return render_template('add_medical_history.html', patient=patient)
+
+# ---------------- Change Password -------------------
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     if 'username' not in session:
@@ -112,6 +172,7 @@ def change_password():
 
     return render_template('change_password.html', error=error, success=success)
 
+# ---------------- Logout -------------------
 @app.route('/logout')
 def logout():
     session.pop('username', None)
