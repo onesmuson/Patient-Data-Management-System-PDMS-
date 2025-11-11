@@ -2,20 +2,31 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-app = Flask(__name__, template_folder='templates')  # explicit templates folder
-app.secret_key = 'pdms_secret_key'
+# Explicit template folder
+app = Flask(__name__, template_folder='templates')
 
-# ---------------- DATABASE -------------------
-# Use Render PostgreSQL URL from env
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL',
-    'sqlite:///pdms.sqlite'  # fallback for local testing
-)
+# Secret key
+app.secret_key = os.getenv('SECRET_KEY', 'pdms_secret_key')
+
+# ---------------- DATABASE CONFIG -------------------
+# Render adds ?sslmode=require automatically. We handle that
+database_url = os.getenv('DATABASE_URL')
+
+if database_url:
+    # Render sometimes gives "postgres://" instead of "postgresql://"
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Local fallback ONLY for local testing
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///pdms.sqlite"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# ---------------- MODELS ---------------------
+# ---------------- MODELS ---------------------------
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -23,29 +34,34 @@ class User(db.Model):
 
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    full_name = db.Column(db.String(100))
+    full_name = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer)
     gender = db.Column(db.String(10))
     condition = db.Column(db.String(200))
 
-# ---------------- INIT DB -------------------
+# ---------------- DATABASE INIT ---------------------
 with app.app_context():
     db.create_all()
+
+    # Create default admin
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', password='admin123')
         db.session.add(admin)
         db.session.commit()
-        print("Admin created: admin/admin123")
+        print("✅ Admin created: username='admin', password='admin123'")
+    else:
+        print("✅ Admin already exists")
 
-# ---------------- ROUTES --------------------
+# ---------------- ROUTES ----------------------------
 @app.route('/')
 def login():
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def do_login():
-    username = request.form['username']
-    password = request.form['password']
+    username = request.form.get('username')
+    password = request.form.get('password')
+
     user = User.query.filter_by(username=username, password=password).first()
     if user:
         session['username'] = username
@@ -56,36 +72,46 @@ def do_login():
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
-    patients = Patient.query.all()
+    patients = Patient.query.order_by(Patient.id.desc()).all()
     return render_template('dashboard.html', patients=patients)
 
 @app.route('/add_patient', methods=['GET', 'POST'])
 def add_patient():
     if 'username' not in session:
         return redirect(url_for('login'))
+
     if request.method == 'POST':
-        name = request.form['name']
-        age = request.form['age']
-        gender = request.form['gender']
-        condition = request.form['condition']
-        new_patient = Patient(full_name=name, age=age, gender=gender, condition=condition)
+        name = request.form.get('name')
+        age = request.form.get('age')
+        gender = request.form.get('gender')
+        condition = request.form.get('condition')
+
+        new_patient = Patient(
+            full_name=name,
+            age=age,
+            gender=gender,
+            condition=condition
+        )
+
         db.session.add(new_patient)
         db.session.commit()
+
         return redirect(url_for('dashboard'))
+
     return render_template('add_patient.html')
 
 @app.route('/view_patients')
 def view_patients():
     if 'username' not in session:
         return redirect(url_for('login'))
-    patients = Patient.query.all()
+    patients = Patient.query.order_by(Patient.id.desc()).all()
     return render_template('view_patients.html', patients=patients)
 
 @app.route('/reports')
 def reports():
     if 'username' not in session:
         return redirect(url_for('login'))
-    patients = Patient.query.all()
+    patients = Patient.query.order_by(Patient.id.desc()).all()
     return render_template('reports.html', patients=patients)
 
 @app.route('/logout')
@@ -93,5 +119,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# ---------------- RUN -------------------------------
 if __name__ == '__main__':
-    app.run()
+    # For local testing only
+    app.run(debug=True)
