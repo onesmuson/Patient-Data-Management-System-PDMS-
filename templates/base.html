@@ -13,6 +13,7 @@
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
         <h2 class="logo">PDMS</h2>
         <div class="nav-links">
@@ -25,9 +26,16 @@
         </div>
     </nav>
 
+    <!-- Main container -->
     <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block content %}
         {% endblock %}
-    </div>
-</body>
-</html>
+    </div
