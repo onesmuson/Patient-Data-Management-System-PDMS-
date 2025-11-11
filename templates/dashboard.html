@@ -1,42 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
+<h2>Dashboard</h2>
+<p>Welcome, {{ session['username'] }}!</p>
 
-<h1 style="color:#38bdf8;">Welcome, {{ session['username'] }}!</h1>
-<h2>Patient Summary</h2>
+<a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
+<hr>
+
+<h3>Patient Summary</h3>
 
 {% if patients %}
 <table>
-    <thead>
-        <tr style="background:#0ea5e9; color:black;">
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Diagnosis</th>
-            <th>Treatment</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for patient in patients %}
-        <tr>
-            <td>{{ patient.id }}</td>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.age }}</td>
-            <td>{{ patient.gender }}</td>
-            <td>{{ patient.diagnosis or patient.condition }}</td>
-            <td>{{ patient.treatment or 'N/A' }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Condition</th>
+    </tr>
+    {% for patient in patients %}
+    <tr>
+        <td>{{ patient.id }}</td>
+        <td>{{ patient.full_name }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>{{ patient.condition }}</td>
+    </tr>
+    {% endfor %}
 </table>
 {% else %}
-<p>No patients found. Please <a href="{{ url_for('add_patient') }}" class="btn">add a new patient</a>.</p>
+<p>No patients found. Please <a href="{{ url_for('add_patient') }}">add a new patient</a>.</p>
 {% endif %}
-
-<div style="margin-top:20px;">
-    <a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
-    <a href="{{ url_for('view_patients') }}" class="btn">View All Patients</a>
-    <a href="{{ url_for('reports') }}" class="btn">View Reports</a>
-</div>
-
 {% endblock %}
