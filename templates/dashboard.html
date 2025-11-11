@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Dashboard</h2>
-<p>Welcome, {{ session['username'] }}!</p>
 
-<a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
+<p>Welcome to the Patient Data Management System Dashboard!</p>
+
+<div style="margin: 20px 0;">
+    <a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
+    <a href="{{ url_for('view_patients') }}" class="btn">View Patients</a>
+    <a href="{{ url_for('reports') }}" class="btn">View Reports</a>
+    <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
+</div>
+
 <hr>
 
 <h3>Patient Summary</h3>
@@ -15,7 +22,8 @@
         <th>Full Name</th>
         <th>Age</th>
         <th>Gender</th>
-        <th>Condition</th>
+        <th>Diagnosis</th>
+        <th>Treatment</th>
     </tr>
     {% for patient in patients %}
     <tr>
@@ -23,7 +31,8 @@
         <td>{{ patient.full_name }}</td>
         <td>{{ patient.age }}</td>
         <td>{{ patient.gender }}</td>
-        <td>{{ patient.condition }}</td>
+        <td>{{ patient.diagnosis or "N/A" }}</td>
+        <td>{{ patient.treatment or "N/A" }}</td>
     </tr>
     {% endfor %}
 </table>
