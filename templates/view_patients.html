@@ -2,6 +2,13 @@
 {% block content %}
 <h2>All Patients</h2>
 
+<p>List of all registered patients in the system.</p>
+
+<a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a> |
+<a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a>
+
+<hr>
+
 {% if patients %}
 <table>
     <tr>
@@ -10,6 +17,7 @@
         <th>Age</th>
         <th>Gender</th>
         <th>Condition</th>
+        <th>Actions</th>
     </tr>
     {% for patient in patients %}
     <tr>
@@ -18,6 +26,10 @@
         <td>{{ patient.age }}</td>
         <td>{{ patient.gender }}</td>
         <td>{{ patient.condition }}</td>
+        <td>
+            <a href="{{ url_for('medical_history', patient_id=patient.id) }}">View History</a> |
+            <a href="{{ url_for('add_medical_history', patient_id=patient.id) }}">Add History</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
