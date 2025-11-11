@@ -1,3 +1,4 @@
+/* ---------- General ---------- */
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #f4f7fa;
@@ -6,6 +7,11 @@ body {
     padding: 0;
 }
 
+h1, h2, h3 {
+    color: #283e51;
+}
+
+/* ---------- Navbar ---------- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -34,6 +40,7 @@ body {
     transform: scale(1.1);
 }
 
+/* ---------- Container ---------- */
 .container {
     max-width: 1200px;
     margin: 30px auto;
@@ -43,7 +50,23 @@ body {
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
-button, input[type="submit"] {
+/* ---------- Forms ---------- */
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 16px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="submit"], button {
     background-color: #4b79a1;
     color: #fff;
     border: none;
@@ -54,22 +77,11 @@ button, input[type="submit"] {
     transition: all 0.3s ease;
 }
 
-button:hover, input[type="submit"]:hover {
+input[type="submit"]:hover, button:hover {
     background-color: #283e51;
 }
 
-input, select, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0 16px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-label {
-    font-weight: 500;
-}
-
+/* ---------- Tables ---------- */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -98,12 +110,33 @@ tr:hover {
     background-color: #e1eaf5;
 }
 
-h1, h2, h3 {
-    color: #283e51;
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    background-color: #4b79a1;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 5px 0;
+    transition: all 0.3s ease;
 }
 
+.btn:hover {
+    background-color: #283e51;
+    transform: scale(1.05);
+}
+
+/* ---------- Alerts ---------- */
 .error {
     color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: green;
     font-weight: bold;
     margin-bottom: 10px;
 }
