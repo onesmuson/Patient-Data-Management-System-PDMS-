@@ -1,20 +1,27 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-<div style="padding: 20px;">
-    <h1>📊 Patient Reports</h1>
-    <p>This section will display reports based on patient data.</p>
+<h2>Reports</h2>
 
-    {% if patients %}
-    <h3>Total Patients: {{ patients|length }}</h3>
-
-    <ul>
-        {% set male = patients | selectattr("gender", "equalto", "Male") | list %}
-        {% set female = patients | selectattr("gender", "equalto", "Female") | list %}
-        <li>👨 Male Patients: {{ male|length }}</li>
-        <li>👩 Female Patients: {{ female|length }}</li>
-    </ul>
-    {% else %}
-    <p>No patient data to generate reports.</p>
-    {% endif %}
-</div>
+{% if patients %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Condition</th>
+    </tr>
+    {% for patient in patients %}
+    <tr>
+        <td>{{ patient.id }}</td>
+        <td>{{ patient.full_name }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>{{ patient.condition }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No patient reports available.</p>
+{% endif %}
 {% endblock %}
