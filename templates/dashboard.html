@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Welcome, {{ session['username'] }}</h1>
+
+<h1 style="color:#38bdf8;">Welcome, {{ session['username'] }}!</h1>
 <h2>Patient Summary</h2>
 
 {% if patients %}
 <table>
     <thead>
-        <tr>
+        <tr style="background:#0ea5e9; color:black;">
             <th>ID</th>
             <th>Full Name</th>
             <th>Age</th>
@@ -29,16 +30,13 @@
     </tbody>
 </table>
 {% else %}
-<p>No patients found. Please <a href="{{ url_for('add_patient') }}">add a new patient</a>.</p>
+<p>No patients found. Please <a href="{{ url_for('add_patient') }}" class="btn">add a new patient</a>.</p>
 {% endif %}
 
-<a href="{{ url_for('add_patient') }}">
-    <button>Add New Patient</button>
-</a>
-<a href="{{ url_for('view_patients') }}">
-    <button>View All Patients</button>
-</a>
-<a href="{{ url_for('reports') }}">
-    <button>View Reports</button>
-</a>
+<div style="margin-top:20px;">
+    <a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a>
+    <a href="{{ url_for('view_patients') }}" class="btn">View All Patients</a>
+    <a href="{{ url_for('reports') }}" class="btn">View Reports</a>
+</div>
+
 {% endblock %}
