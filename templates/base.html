@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDMS</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body style="background-color: #121212; color: white; font-family: Arial, sans-serif;">
-    <nav style="padding: 10px; background: #333; text-align: center;">
-        <a href="{{ url_for('dashboard') }}" style="color: white; margin: 10px;">Dashboard</a>
-        <a href="{{ url_for('add_patient') }}" style="color: white; margin: 10px;">Add Patient</a>
-        <a href="{{ url_for('logout') }}" style="color: white; margin: 10px;">Logout</a>
+
+<body>
+    <nav class="navbar">
+        <h2 class="logo">PDMS</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('add_patient') }}">Add Patient</a>
+            <a href="{{ url_for('view_patients') }}">View Patients</a>
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <a href="{{ url_for('change_password') }}">Change Password</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
     </nav>
 
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>
