@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisshouldbeasecretkey'
@@ -63,6 +62,8 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # ---------------- ROUTES ---------------------
+
+# ---------- DASHBOARD ----------
 @app.route('/')
 @login_required
 def dashboard():
@@ -71,14 +72,14 @@ def dashboard():
     total_appointments = Appointment.query.count()
     total_bills = Bill.query.count()
     total_messages = Contact.query.count()
-    return render_template('dashboard.html', 
+    return render_template('dashboard.html',
                            total_patients=total_patients,
                            total_medicines=total_medicines,
                            total_appointments=total_appointments,
                            total_bills=total_bills,
                            total_messages=total_messages)
 
-# --------- LOGIN/LOGOUT ---------
+# ---------- LOGIN / LOGOUT ----------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -89,7 +90,7 @@ def login():
             login_user(user)
             return redirect(url_for('dashboard'))
         else:
-            flash("Invalid username or password!", "flash-error")
+            flash("Invalid username or password!", "error")
     return render_template('login.html')
 
 @app.route('/logout')
@@ -98,7 +99,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# --------- PATIENTS ---------
+# ---------- PATIENTS ----------
 @app.route('/patients', methods=['GET', 'POST'])
 @login_required
 def patients():
@@ -113,12 +114,12 @@ def patients():
                           condition=condition, contact=contact_info, address=address)
         db.session.add(patient)
         db.session.commit()
-        flash("Patient added successfully!", "flash-success")
+        flash("Patient added successfully!", "success")
         return redirect(url_for('patients'))
-    patients = Patient.query.all()
-    return render_template('patients.html', patients=patients)
+    all_patients = Patient.query.all()
+    return render_template('patients.html', patients=all_patients)
 
-# --------- MEDICINES ---------
+# ---------- MEDICINES ----------
 @app.route('/add_medicine', methods=['GET', 'POST'])
 @login_required
 def add_medicine():
@@ -130,7 +131,7 @@ def add_medicine():
         med = Medicine(name=name, description=description, dosage=dosage, quantity=quantity)
         db.session.add(med)
         db.session.commit()
-        flash("Medicine added successfully!", "flash-success")
+        flash("Medicine added successfully!", "success")
         return redirect(url_for('view_medicines'))
     return render_template('add_medicine.html')
 
@@ -140,11 +141,11 @@ def view_medicines():
     medicines = Medicine.query.all()
     return render_template('view_medicines.html', medicines=medicines)
 
-# --------- APPOINTMENTS ---------
+# ---------- APPOINTMENTS ----------
 @app.route('/appointments', methods=['GET', 'POST'])
 @login_required
 def appointments():
-    patients = Patient.query.all()
+    patients_list = Patient.query.all()
     if request.method == 'POST':
         patient_id = request.form['patient_id']
         date = request.form['date']
@@ -153,16 +154,16 @@ def appointments():
         appt = Appointment(patient_id=patient_id, date=date, time=time, reason=reason)
         db.session.add(appt)
         db.session.commit()
-        flash("Appointment scheduled successfully!", "flash-success")
+        flash("Appointment scheduled successfully!", "success")
         return redirect(url_for('appointments'))
-    appointments = Appointment.query.all()
-    return render_template('appointment.html', appointments=appointments, patients=patients)
+    all_appointments = Appointment.query.all()
+    return render_template('appointment.html', appointments=all_appointments, patients=patients_list)
 
-# --------- BILLING ---------
+# ---------- BILLING ----------
 @app.route('/billing', methods=['GET', 'POST'])
 @login_required
 def billing():
-    patients = Patient.query.all()
+    patients_list = Patient.query.all()
     if request.method == 'POST':
         patient_id = request.form['patient_id']
         total_amount = request.form['total_amount']
@@ -171,12 +172,12 @@ def billing():
         bill = Bill(patient_id=patient_id, total_amount=total_amount, date_issued=date_issued, status=status)
         db.session.add(bill)
         db.session.commit()
-        flash("Bill added successfully!", "flash-success")
+        flash("Bill added successfully!", "success")
         return redirect(url_for('billing'))
-    bills = Bill.query.all()
-    return render_template('billing.html', bills=bills, patients=patients)
+    all_bills = Bill.query.all()
+    return render_template('billing.html', bills=all_bills, patients=patients_list)
 
-# --------- CONTACTS ---------
+# ---------- CONTACTS ----------
 @app.route('/contacts', methods=['GET', 'POST'])
 @login_required
 def contacts():
@@ -187,10 +188,10 @@ def contacts():
         contact = Contact(name=name, email=email, message=message)
         db.session.add(contact)
         db.session.commit()
-        flash("Message sent successfully!", "flash-success")
+        flash("Message sent successfully!", "success")
         return redirect(url_for('contacts'))
-    messages = Contact.query.all()
-    return render_template('contacts.html', messages=messages)
+    all_messages = Contact.query.all()
+    return render_template('contacts.html', messages=all_messages)
 
 # ---------------- CREATE DB & DEFAULT ADMIN ---------------------
 @app.before_first_request
