@@ -1,49 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Billing</title>
-</head>
-<body>
-    <h2>New Bill</h2>
-    <form method="POST">
-        <label>Patient:</label><br>
-        <select name="patient_id" required>
-            {% for patient in patients %}
-            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
-            {% endfor %}
-        </select><br>
-        <label>Total Amount:</label><br>
-        <input type="number" name="total_amount" step="0.01" required><br>
-        <label>Date Issued:</label><br>
-        <input type="date" name="date_issued" required><br>
-        <label>Status:</label><br>
-        <select name="status">
-            <option value="Unpaid">Unpaid</option>
-            <option value="Paid">Paid</option>
-        </select><br><br>
-        <button type="submit">Add Bill</button>
-    </form>
-    <hr>
-    <h3>All Bills</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Patient</th>
-            <th>Total Amount</th>
-            <th>Date Issued</th>
-            <th>Status</th>
-        </tr>
-        {% for bill in bills %}
-        <tr>
-            <td>{{ bill.id }}</td>
-            <td>{{ bill.patient.full_name }}</td>
-            <td>{{ bill.total_amount }}</td>
-            <td>{{ bill.date_issued }}</td>
-            <td>{{ bill.status }}</td>
-        </tr>
+{% extends "base.html" %}
+{% block title %}Billing - PDMS{% endblock %}
+
+{% block content %}
+<h2>Add Bill</h2>
+<form method="POST">
+    <label>Patient:</label>
+    <select name="patient_id" required>
+        {% for patient in patients %}
+        <option value="{{ patient.id }}">{{ patient.full_name }}</option>
         {% endfor %}
-    </table>
-    <a href="{{ url_for('index') }}">Dashboard</a>
-</body>
-</html>
+    </select>
+    
+    <label>Total Amount:</label>
+    <input type="number" step="0.01" name="total_amount" required>
+    
+    <label>Date Issued:</label>
+    <input type="text" name="date_issued">
+    
+    <label>Status:</label>
+    <select name="status">
+        <option value="Unpaid">Unpaid</option>
+        <option value="Paid">Paid</option>
+    </select>
+    
+    <input type="submit" value="Add Bill">
+</form>
+
+<h2>All Bills</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Patient</th>
+        <th>Total Amount</th>
+        <th>Date Issued</th>
+        <th>Status</th>
+    </tr>
+    {% for bill in bills %}
+    <tr>
+        <td>{{ bill.id }}</td>
+        <td>{{ bill.patient.full_name }}</td>
+        <td>{{ bill.total_amount }}</td>
+        <td>{{ bill.date_issued }}</td>
+        <td>{{ bill.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
