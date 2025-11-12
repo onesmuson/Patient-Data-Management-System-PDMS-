@@ -1,35 +1,49 @@
-{% extends 'base.html' %}
-{% block content %}
-<h3>Billing Section</h3>
-<form method="POST" class="mb-4">
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <input type="text" name="patient_name" class="form-control" placeholder="Patient Name" required>
-    </div>
-    <div class="col-md-4 mb-3">
-      <input type="number" name="amount" step="0.01" class="form-control" placeholder="Amount" required>
-    </div>
-    <div class="col-md-4 mb-3">
-      <select name="status" class="form-control">
-        <option>Paid</option>
-        <option>Unpaid</option>
-      </select>
-    </div>
-  </div>
-  <button class="btn btn-success">Add Bill</button>
-</form>
-
-<table class="table table-bordered table-striped">
-  <tr>
-    <th>ID</th><th>Patient</th><th>Amount</th><th>Status</th>
-  </tr>
-  {% for b in bills %}
-  <tr>
-    <td>{{ b.id }}</td>
-    <td>{{ b.patient_name }}</td>
-    <td>{{ b.amount }}</td>
-    <td>{{ b.status }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing</title>
+</head>
+<body>
+    <h2>New Bill</h2>
+    <form method="POST">
+        <label>Patient:</label><br>
+        <select name="patient_id" required>
+            {% for patient in patients %}
+            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+            {% endfor %}
+        </select><br>
+        <label>Total Amount:</label><br>
+        <input type="number" name="total_amount" step="0.01" required><br>
+        <label>Date Issued:</label><br>
+        <input type="date" name="date_issued" required><br>
+        <label>Status:</label><br>
+        <select name="status">
+            <option value="Unpaid">Unpaid</option>
+            <option value="Paid">Paid</option>
+        </select><br><br>
+        <button type="submit">Add Bill</button>
+    </form>
+    <hr>
+    <h3>All Bills</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Total Amount</th>
+            <th>Date Issued</th>
+            <th>Status</th>
+        </tr>
+        {% for bill in bills %}
+        <tr>
+            <td>{{ bill.id }}</td>
+            <td>{{ bill.patient.full_name }}</td>
+            <td>{{ bill.total_amount }}</td>
+            <td>{{ bill.date_issued }}</td>
+            <td>{{ bill.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Dashboard</a>
+</body>
+</html>
