@@ -1,30 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Appointments{% endblock %}
 
 {% block content %}
-<h1>Appointments</h1>
-<form method="POST">
-    <select name="patient_id">
-        {% for p in patients %}
-            <option value="{{ p.id }}">{{ p.full_name }}</option>
-        {% endfor %}
-    </select>
-    <input type="date" name="date">
-    <input type="time" name="time">
-    <input type="text" name="reason" placeholder="Reason">
-    <button type="submit">Add Appointment</button>
+<h2>Appointments</h2>
+<form method="POST" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <select name="patient_id" class="form-select" required>
+                <option value="">Select Patient</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2"><input type="date" name="date" class="form-control" required></div>
+        <div class="col-md-2"><input type="time" name="time" class="form-control" required></div>
+        <div class="col-md-3"><input type="text" name="reason" class="form-control" placeholder="Reason" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-primary">Add Appointment</button></div>
+    </div>
 </form>
 
-<table>
-    <tr><th>ID</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr>
-    {% for a in appointments %}
-    <tr>
-        <td>{{ a.id }}</td>
-        <td>{{ a.patient.full_name }}</td>
-        <td>{{ a.date }}</td>
-        <td>{{ a.time }}</td>
-        <td>{{ a.reason }}</td>
-    </tr>
-    {% endfor %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in appointments %}
+        <tr>
+            <td>{{ app.id }}</td>
+            <td>{{ app.patient.full_name }}</td>
+            <td>{{ app.date }}</td>
+            <td>{{ app.time }}</td>
+            <td>{{ app.reason }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
