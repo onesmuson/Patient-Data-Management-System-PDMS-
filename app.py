@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisshouldbeasecretkey'
@@ -57,6 +57,13 @@ class Contact(db.Model):
     email = db.Column(db.String(100))
     message = db.Column(db.String(300))
 
+class MedicalHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    history = db.Column(db.String(500))
+    date_added = db.Column(db.String(50), default=datetime.datetime.now().strftime("%Y-%m-%d"))
+    patient = db.relationship('Patient', backref='histories')
+
 # ---------------- LOGIN MANAGER ---------------------
 @login_manager.user_loader
 def load_user(user_id):
@@ -66,7 +73,7 @@ def load_user(user_id):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html')
+    return render_template('dashboard.html')
 
 # --------- LOGIN/LOGOUT ---------
 @app.route('/login', methods=['GET', 'POST'])
@@ -181,6 +188,34 @@ def patients():
         return redirect(url_for('patients'))
     patients = Patient.query.all()
     return render_template('patients.html', patients=patients)
+
+# --------- MEDICAL HISTORY ---------
+@app.route('/add_medical_history', methods=['GET', 'POST'])
+@login_required
+def add_medical_history():
+    patients = Patient.query.all()
+    if request.method == 'POST':
+        patient_id = request.form['patient_id']
+        history = request.form['history']
+        record = MedicalHistory(patient_id=patient_id, history=history)
+        db.session.add(record)
+        db.session.commit()
+        flash("Medical history added successfully!", "success")
+        return redirect(url_for('medical_history'))
+    return render_template('add_medical_history.html', patients=patients)
+
+@app.route('/medical_history')
+@login_required
+def medical_history():
+    histories = MedicalHistory.query.all()
+    return render_template('medical_history.html', histories=histories)
+
+# --------- REPORTS ---------
+@app.route('/reports')
+@login_required
+def reports():
+    patients = Patient.query.all()
+    return render_template('reports.html', patients=patients)
 
 # ---------------- CREATE DB & DEFAULT ADMIN ---------------------
 @app.before_first_request
