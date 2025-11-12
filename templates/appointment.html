@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Book Appointment</h3>
+<form method="POST">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <input type="text" name="patient_name" class="form-control" placeholder="Patient Name" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="text" name="doctor_name" class="form-control" placeholder="Doctor Name" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="date" name="date" class="form-control" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="time" name="time" class="form-control" required>
+    </div>
+  </div>
+  <button class="btn btn-primary">Book Appointment</button>
+</form>
+{% endblock %}
