@@ -1,19 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Medicines{% endblock %}
 
 {% block content %}
-<h1>Medicines</h1>
-<a href="{{ url_for('add_medicine') }}" class="btn">Add Medicine</a>
-<table>
-    <tr><th>ID</th><th>Name</th><th>Description</th><th>Dosage</th><th>Quantity</th></tr>
-    {% for med in medicines %}
-    <tr>
-        <td>{{ med.id }}</td>
-        <td>{{ med.name }}</td>
-        <td>{{ med.description }}</td>
-        <td>{{ med.dosage }}</td>
-        <td>{{ med.quantity }}</td>
-    </tr>
-    {% endfor %}
+<h2>Medicines</h2>
+<a href="{{ url_for('add_medicine') }}" class="btn btn-success mb-3">Add Medicine</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Dosage</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for med in medicines %}
+        <tr>
+            <td>{{ med.id }}</td>
+            <td>{{ med.name }}</td>
+            <td>{{ med.description }}</td>
+            <td>{{ med.dosage }}</td>
+            <td>{{ med.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
