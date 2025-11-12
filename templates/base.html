@@ -2,48 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>PDMS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDMS - {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <div class="logo">
-            <h1>Patient Data Management System</h1>
+        <div class="navbar">
+            <div class="logo">PDMS</div>
+            <nav>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('patients') }}">Patients</a>
+                <a href="{{ url_for('view_medicines') }}">Medicines</a>
+                <a href="{{ url_for('appointments') }}">Appointments</a>
+                <a href="{{ url_for('billing') }}">Billing</a>
+                <a href="{{ url_for('contacts') }}">Contacts</a>
+                <a href="{{ url_for('medical_history') }}">Medical History</a>
+                <a href="{{ url_for('reports') }}">Reports</a>
+                <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+            </nav>
         </div>
-        <nav>
-            <ul>
-                {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('index') }}">Dashboard</a></li>
-                <li><a href="{{ url_for('patients') }}">Patients</a></li>
-                <li><a href="{{ url_for('view_medicines') }}">Medicines</a></li>
-                <li><a href="{{ url_for('appointments') }}">Appointments</a></li>
-                <li><a href="{{ url_for('billing') }}">Billing</a></li>
-                <li><a href="{{ url_for('contacts') }}">Contacts</a></li>
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                {% endif %}
-            </ul>
-        </nav>
     </header>
-
     <main>
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class="flash-messages">
-              {% for category, message in messages %}
-                <div class="flash {{ category }}">{{ message }}</div>
-              {% endfor %}
-            </div>
-          {% endif %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endwith %}
-        
-        {% block content %}
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
-
     <footer>
-        <p>&copy; 2025 Patient Data Management System. All rights reserved.</p>
+        <p>&copy; 2025 Patient Data Management System</p>
     </footer>
 </body>
 </html>
