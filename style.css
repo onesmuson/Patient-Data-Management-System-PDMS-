@@ -1,87 +1,36 @@
-/* ---------- General ---------- */
+/* General styling */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f7fa;
-    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
 }
 
-h1, h2, h3 {
-    color: #283e51;
-}
-
-/* ---------- Navbar ---------- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(90deg, #4b79a1, #283e51);
-    padding: 15px 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.navbar .logo {
-    color: #fff;
-    font-size: 24px;
-    font-weight: 600;
-}
-
-.navbar .nav-links a {
-    color: #fff;
-    margin-left: 20px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.navbar .nav-links a:hover {
-    color: #ffd700;
-    transform: scale(1.1);
-}
-
-/* ---------- Container ---------- */
 .container {
-    max-width: 1200px;
-    margin: 30px auto;
+    width: 80%;
+    margin: auto;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 
-/* ---------- Forms ---------- */
-input, select, textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0 16px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-label {
-    font-weight: 500;
-    display: block;
-    margin-bottom: 5px;
-}
-
-input[type="submit"], button {
-    background-color: #4b79a1;
+/* Navigation */
+nav {
+    background-color: #343a40;
     color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    padding: 15px;
 }
 
-input[type="submit"]:hover, button:hover {
-    background-color: #283e51;
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+    font-weight: bold;
 }
 
-/* ---------- Tables ---------- */
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -89,54 +38,75 @@ table {
 }
 
 table, th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #dee2e6;
 }
 
 th, td {
-    padding: 12px;
+    padding: 10px;
     text-align: left;
 }
 
 th {
-    background-color: #4b79a1;
+    background-color: #343a40;
     color: #fff;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+/* Forms */
+form {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-tr:hover {
-    background-color: #e1eaf5;
+input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0 12px 0;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }
 
-/* ---------- Buttons ---------- */
-.btn {
-    display: inline-block;
-    background-color: #4b79a1;
-    color: #fff;
+input[type="submit"], button {
+    background-color: #343a40;
+    color: white;
+    border: none;
     padding: 10px 15px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    margin: 5px 0;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
-.btn:hover {
-    background-color: #283e51;
-    transform: scale(1.05);
+input[type="submit"]:hover, button:hover {
+    background-color: #495057;
 }
 
-/* ---------- Alerts ---------- */
-.error {
-    color: red;
-    font-weight: bold;
+/* Flash messages */
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
     margin-bottom: 10px;
 }
 
-.success {
-    color: green;
-    font-weight: bold;
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
     margin-bottom: 10px;
+}
+
+/* Dashboard */
+.card {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+h1, h2, h3 {
+    color: #343a40;
 }
