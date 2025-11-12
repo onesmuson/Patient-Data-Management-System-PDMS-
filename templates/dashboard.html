@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - PDMS</title>
-</head>
-<body>
-    <h1>Welcome, {{ current_user.username }}</h1>
-    <nav>
-        <a href="{{ url_for('patients') }}">Patients</a> |
-        <a href="{{ url_for('add_medicine') }}">Add Medicine</a> |
-        <a href="{{ url_for('view_medicines') }}">View Medicines</a> |
-        <a href="{{ url_for('appointments') }}">Appointments</a> |
-        <a href="{{ url_for('billing') }}">Billing</a> |
-        <a href="{{ url_for('contacts') }}">Contacts</a> |
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </nav>
-    <hr>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Dashboard - PDMS{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ current_user.username }}</h1>
+
+<div class="card">
+    <h3>Total Patients: {{ patients|length }}</h3>
+</div>
+<div class="card">
+    <h3>Total Medicines: {{ medicines|length }}</h3>
+</div>
+<div class="card">
+    <h3>Total Appointments: {{ appointments|length }}</h3>
+</div>
+<div class="card">
+    <h3>Total Bills: {{ bills|length }}</h3>
+</div>
+<div class="card">
+    <h3>Total Messages: {{ messages|length }}</h3>
+</div>
+{% endblock %}
