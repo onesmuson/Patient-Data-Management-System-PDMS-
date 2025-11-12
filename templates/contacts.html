@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Contact Us</h3>
+<form method="POST">
+  <div class="mb-3">
+    <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+  </div>
+  <div class="mb-3">
+    <input type="email" name="email" class="form-control" placeholder="Email" required>
+  </div>
+  <div class="mb-3">
+    <textarea name="message" class="form-control" rows="4" placeholder="Message"></textarea>
+  </div>
+  <button class="btn btn-primary">Send Message</button>
+</form>
+{% endblock %}
