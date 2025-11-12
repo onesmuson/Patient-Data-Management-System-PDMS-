@@ -1,57 +1,41 @@
 {% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h1>Dashboard</h1>
-
-    <!-- DASHBOARD CARDS -->
-    <div class="dashboard-cards">
-        <div class="card">
-            <h2>{{ total_patients }}</h2>
-            <p>Total Patients</p>
-        </div>
-        <div class="card">
-            <h2>{{ total_medicines }}</h2>
-            <p>Total Medicines</p>
-        </div>
-        <div class="card">
-            <h2>{{ total_appointments }}</h2>
-            <p>Total Appointments</p>
-        </div>
-        <div class="card">
-            <h2>{{ total_bills }}</h2>
-            <p>Total Bills</p>
-        </div>
-        <div class="card">
-            <h2>{{ total_messages }}</h2>
-            <p>Messages</p>
-        </div>
-    </div>
-
-    <!-- QUICK OVERVIEW TABLE (Optional) -->
-    <h2 style="margin-top: 40px;">Recent Patients</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Full Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Condition</th>
-                <th>Contact</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ patient.id }}</td>
-                <td>{{ patient.full_name }}</td>
-                <td>{{ patient.age }}</td>
-                <td>{{ patient.gender }}</td>
-                <td>{{ patient.condition }}</td>
-                <td>{{ patient.contact }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h1>Welcome to PDMS Dashboard</h1>
+<div class="dashboard-cards">
+    <div class="card"><i class="fa-solid fa-user-injured"></i><h2>{{ total_patients }}</h2><p>Patients</p></div>
+    <div class="card"><i class="fa-solid fa-pills"></i><h2>{{ total_medicines }}</h2><p>Medicines</p></div>
+    <div class="card"><i class="fa-solid fa-calendar-check"></i><h2>{{ total_appointments }}</h2><p>Appointments</p></div>
+    <div class="card"><i class="fa-solid fa-file-invoice-dollar"></i><h2>{{ total_bills }}</h2><p>Bills</p></div>
+    <div class="card"><i class="fa-solid fa-envelope"></i><h2>{{ total_messages }}</h2><p>Messages</p></div>
 </div>
+
+<h2>Recent Patients</h2>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Contact</th></tr>
+    {% for p in patients %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.full_name }}</td>
+        <td>{{ p.age }}</td>
+        <td>{{ p.gender }}</td>
+        <td>{{ p.contact }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Recent Appointments</h2>
+<table>
+    <tr><th>ID</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr>
+    {% for a in appointments %}
+    <tr>
+        <td>{{ a.id }}</td>
+        <td>{{ a.patient.full_name }}</td>
+        <td>{{ a.date }}</td>
+        <td>{{ a.time }}</td>
+        <td>{{ a.reason }}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}
