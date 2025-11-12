@@ -1,46 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Appointments</title>
-</head>
-<body>
-    <h2>Schedule Appointment</h2>
-    <form method="POST">
-        <label>Patient:</label><br>
-        <select name="patient_id" required>
-            {% for patient in patients %}
-            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
-            {% endfor %}
-        </select><br>
-        <label>Date:</label><br>
-        <input type="date" name="date" required><br>
-        <label>Time:</label><br>
-        <input type="time" name="time" required><br>
-        <label>Reason:</label><br>
-        <input type="text" name="reason"><br><br>
-        <button type="submit">Schedule</button>
-    </form>
-    <hr>
-    <h3>All Appointments</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Patient</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Reason</th>
-        </tr>
-        {% for appt in appointments %}
-        <tr>
-            <td>{{ appt.id }}</td>
-            <td>{{ appt.patient.full_name }}</td>
-            <td>{{ appt.date }}</td>
-            <td>{{ appt.time }}</td>
-            <td>{{ appt.reason }}</td>
-        </tr>
+{% extends "base.html" %}
+{% block title %}Appointments - PDMS{% endblock %}
+
+{% block content %}
+<h2>Schedule Appointment</h2>
+<form method="POST">
+    <label>Patient:</label>
+    <select name="patient_id" required>
+        {% for patient in patients %}
+        <option value="{{ patient.id }}">{{ patient.full_name }}</option>
         {% endfor %}
-    </table>
-    <a href="{{ url_for('index') }}">Dashboard</a>
-</body>
-</html>
+    </select>
+    
+    <label>Date:</label>
+    <input type="text" name="date" required>
+    
+    <label>Time:</label>
+    <input type="text" name="time" required>
+    
+    <label>Reason:</label>
+    <input type="text" name="reason">
+    
+    <input type="submit" value="Schedule">
+</form>
+
+<h2>All Appointments</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Patient</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Reason</th>
+    </tr>
+    {% for appt in appointments %}
+    <tr>
+        <td>{{ appt.id }}</td>
+        <td>{{ appt.patient.full_name }}</td>
+        <td>{{ appt.date }}</td>
+        <td>{{ appt.time }}</td>
+        <td>{{ appt.reason }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
