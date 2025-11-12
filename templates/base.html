@@ -2,30 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}PDMS{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>PDMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('index') }}">Dashboard</a>
-        <a href="{{ url_for('patients') }}">Patients</a>
-        <a href="{{ url_for('add_medicine') }}">Add Medicine</a>
-        <a href="{{ url_for('view_medicines') }}">View Medicines</a>
-        <a href="{{ url_for('appointments') }}">Appointments</a>
-        <a href="{{ url_for('billing') }}">Billing</a>
-        <a href="{{ url_for('contacts') }}">Contacts</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('patients') }}">Patients</a></li>
+            <li><a href="{{ url_for('view_medicines') }}">Medicines</a></li>
+            <li><a href="{{ url_for('appointments') }}">Appointments</a></li>
+            <li><a href="{{ url_for('billing') }}">Billing</a></li>
+            <li><a href="{{ url_for('contacts') }}">Contacts</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
     </nav>
-    
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="flash-{{ category }}">{{ message }}</div>
+                    <div class="flash {{ category }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        
         {% block content %}{% endblock %}
     </div>
 </body>
