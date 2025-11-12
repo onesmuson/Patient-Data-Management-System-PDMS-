@@ -1,21 +1,22 @@
-{% extends 'base.html' %}
-{% block content %}
-<h3>Add Medicine</h3>
-<form method="POST">
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <input type="text" name="name" class="form-control" placeholder="Medicine Name" required>
-    </div>
-    <div class="col-md-6 mb-3">
-      <input type="text" name="category" class="form-control" placeholder="Category">
-    </div>
-    <div class="col-md-6 mb-3">
-      <input type="number" name="quantity" class="form-control" placeholder="Quantity">
-    </div>
-    <div class="col-md-6 mb-3">
-      <input type="number" name="price" step="0.01" class="form-control" placeholder="Price">
-    </div>
-  </div>
-  <button class="btn btn-primary">Add Medicine</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Medicine</title>
+</head>
+<body>
+    <h2>Add Medicine</h2>
+    <form method="POST">
+        <label>Name:</label><br>
+        <input type="text" name="name" required><br>
+        <label>Description:</label><br>
+        <input type="text" name="description"><br>
+        <label>Dosage:</label><br>
+        <input type="text" name="dosage"><br>
+        <label>Quantity:</label><br>
+        <input type="number" name="quantity" min="0"><br><br>
+        <button type="submit">Add Medicine</button>
+    </form>
+    <a href="{{ url_for('view_medicines') }}">View All Medicines</a>
+</body>
+</html>
