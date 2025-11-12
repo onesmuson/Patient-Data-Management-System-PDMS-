@@ -1,45 +1,38 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-<h2>Dashboard</h2>
-
-<p>Welcome to the Patient Data Management System Dashboard!</p>
-
-<div style="margin-bottom: 15px;">
-    <a href="{{ url_for('add_patient') }}" class="btn">Add New Patient</a> |
-    <a href="{{ url_for('view_patients') }}" class="btn">View Patients</a> |
-    <a href="{{ url_for('reports') }}" class="btn">View Reports</a> |
-    <a href="{{ url_for('register') }}" class="btn">Register New User</a>
+<h2 class="text-center text-primary mb-4">Welcome to PDMS Dashboard</h2>
+<div class="row">
+  <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Patients</h5>
+        <a href="{{ url_for('view_patients') }}" class="btn btn-primary">View Patients</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Medicines</h5>
+        <a href="{{ url_for('view_medicines') }}" class="btn btn-success">View Medicines</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Appointments</h5>
+        <a href="{{ url_for('appointment') }}" class="btn btn-warning">Manage</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Billing</h5>
+        <a href="{{ url_for('billing') }}" class="btn btn-danger">Billing</a>
+      </div>
+    </div>
+  </div>
 </div>
-
-<hr>
-
-<h3>Patient Summary</h3>
-
-{% if patients %}
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Full Name</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Condition</th>
-        <th>Actions</th>
-    </tr>
-    {% for patient in patients %}
-    <tr>
-        <td>{{ patient.id }}</td>
-        <td>{{ patient.full_name }}</td>
-        <td>{{ patient.age }}</td>
-        <td>{{ patient.gender }}</td>
-        <td>{{ patient.condition }}</td>
-        <td>
-            <a href="{{ url_for('medical_history', patient_id=patient.id) }}">View History</a> |
-            <a href="{{ url_for('add_medical_history', patient_id=patient.id) }}">Add History</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No patients found. Please <a href="{{ url_for('add_patient') }}">add a new patient</a>.</p>
-{% endif %}
 {% endblock %}
