@@ -1,30 +1,25 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Medical History for {{ patient.full_name }}</h2>
-
-<a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a> |
-<a href="{{ url_for('add_medical_history', patient_id=patient.id) }}" class="btn">Add Medical History</a>
-
-<hr>
-
-{% if history %}
-<table>
-    <tr>
-        <th>Date</th>
-        <th>Diagnosis</th>
-        <th>Treatment</th>
-        <th>Notes</th>
-    </tr>
-    {% for record in history %}
-    <tr>
-        <td>{{ record.date }}</td>
-        <td>{{ record.diagnosis }}</td>
-        <td>{{ record.treatment }}</td>
-        <td>{{ record.notes }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No medical history found. You can <a href="{{ url_for('add_medical_history', patient_id=patient.id) }}">add a new record</a>.</p>
-{% endif %}
+<div class="container">
+    <h2>Patient Medical Histories</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>History</th>
+                <th>Date Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in histories %}
+            <tr>
+                <td>{{ record.patient.full_name }}</td>
+                <td>{{ record.history }}</td>
+                <td>{{ record.date_added }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
