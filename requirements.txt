@@ -2,8 +2,8 @@ Flask==2.2.5
 Flask-Login==0.6.2
 Flask-WTF==1.1.1
 Flask-SQLAlchemy==3.0.3
-WTForms==3.0.1
 SQLAlchemy==1.4.50
+WTForms==3.0.1
 gunicorn==23.0.0
 psycopg2-binary==2.9.11
 Werkzeug==2.2.3
@@ -12,3 +12,4 @@ itsdangerous==2.2.0
 click==8.3.0
 greenlet==3.2.4
 MarkupSafe==3.0.3
+packaging==25.0
