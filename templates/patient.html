@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patients</title>
+</head>
+<body>
+    <h2>Add Patient</h2>
+    <form method="POST">
+        <label>Full Name:</label><br>
+        <input type="text" name="full_name" required><br>
+        <label>Age:</label><br>
+        <input type="number" name="age"><br>
+        <label>Gender:</label><br>
+        <select name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br>
+        <label>Condition:</label><br>
+        <input type="text" name="condition"><br>
+        <label>Contact:</label><br>
+        <input type="text" name="contact"><br>
+        <label>Address:</label><br>
+        <input type="text" name="address"><br><br>
+        <button type="submit">Add Patient</button>
+    </form>
+    <hr>
+    <h3>All Patients</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Condition</th>
+            <th>Contact</th>
+            <th>Address</th>
+        </tr>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.full_name }}</td>
+            <td>{{ patient.age }}</td>
+            <td>{{ patient.gender }}</td>
+            <td>{{ patient.condition }}</td>
+            <td>{{ patient.contact }}</td>
+            <td>{{ patient.address }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Dashboard</a>
+</body>
+</html>
