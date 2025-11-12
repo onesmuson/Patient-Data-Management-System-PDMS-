@@ -1,27 +1,27 @@
 {% extends "base.html" %}
-{% block content %}
-<h2>Reports</h2>
 
-{% if patients %}
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Full Name</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>Condition</th>
-    </tr>
-    {% for patient in patients %}
-    <tr>
-        <td>{{ patient.id }}</td>
-        <td>{{ patient.full_name }}</td>
-        <td>{{ patient.age }}</td>
-        <td>{{ patient.gender }}</td>
-        <td>{{ patient.condition }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No patient reports available.</p>
-{% endif %}
+{% block content %}
+<div class="container">
+    <h2>Reports</h2>
+
+    <h3>Patient Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Total Appointments</th>
+                <th>Total Bills</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient.full_name }}</td>
+                <td>{{ patient.appointments|length }}</td>
+                <td>{{ patient.bills|sum(attribute='total_amount') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
