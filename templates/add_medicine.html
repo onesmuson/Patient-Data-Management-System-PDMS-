@@ -1,21 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Add Medicine - PDMS{% endblock %}
+{% block title %}Add Medicine{% endblock %}
 
 {% block content %}
-<h2>Add Medicine</h2>
+<h1>Add Medicine</h1>
 <form method="POST">
-    <label>Name:</label>
-    <input type="text" name="name" required>
-    
-    <label>Description:</label>
-    <input type="text" name="description">
-    
-    <label>Dosage:</label>
-    <input type="text" name="dosage">
-    
-    <label>Quantity:</label>
-    <input type="number" name="quantity">
-    
-    <input type="submit" value="Add Medicine">
+    <input type="text" name="name" placeholder="Medicine Name">
+    <input type="text" name="description" placeholder="Description">
+    <input type="text" name="dosage" placeholder="Dosage">
+    <input type="number" name="quantity" placeholder="Quantity">
+    <button type="submit">Add Medicine</button>
 </form>
 {% endblock %}
