@@ -1,32 +1,97 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Patients</h2>
-<a href="{{ url_for('patients') }}" class="btn btn-primary mb-3">Add New Patient</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Contact</th>
-            <th>Address</th>
-            <th>Condition</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for patient in patients %}
-        <tr>
-            <td>{{ patient.id }}</td>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.age }}</td>
-            <td>{{ patient.gender }}</td>
-            <td>{{ patient.contact }}</td>
-            <td>{{ patient.address }}</td>
-            <td>{{ patient.condition }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h2 class="mb-4">Patients Management</h2>
+
+<div class="row">
+  <!-- Add Patient Form -->
+  <div class="col-md-4">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Add New Patient</h5>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('patients') }}">
+          <div class="mb-3">
+            <label for="full_name" class="form-label">Full Name</label>
+            <input type="text" name="full_name" id="full_name" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="age" class="form-label">Age</label>
+            <input type="number" name="age" id="age" class="form-control" min="0">
+          </div>
+
+          <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select name="gender" id="gender" class="form-select">
+              <option value="">--Select--</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="contact" class="form-label">Contact</label>
+            <input type="text" name="contact" id="contact" class="form-control">
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea name="address" id="address" class="form-control"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="condition" class="form-label">Condition</label>
+            <textarea name="condition" id="condition" class="form-control"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">Add Patient</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient Table -->
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Patient List</h5>
+      </div>
+      <div class="card-body table-responsive">
+        {% if patients %}
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Contact</th>
+              <th>Address</th>
+              <th>Condition</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for patient in patients %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ patient.full_name }}</td>
+              <td>{{ patient.age or '-' }}</td>
+              <td>{{ patient.gender or '-' }}</td>
+              <td>{{ patient.contact or '-' }}</td>
+              <td>{{ patient.address or '-' }}</td>
+              <td>{{ patient.condition or '-' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="text-muted">No patients added yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
