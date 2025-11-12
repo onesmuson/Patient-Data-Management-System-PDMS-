@@ -1,29 +1,20 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Add Medical History for {{ patient.full_name }}</h2>
+<div class="container">
+    <h2>Add Medical History</h2>
+    <form method="POST" action="{{ url_for('add_medical_history') }}">
+        <label for="patient_id">Select Patient</label>
+        <select name="patient_id" id="patient_id" required>
+            {% for patient in patients %}
+            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+            {% endfor %}
+        </select>
 
-{% if error %}
-<p class="error">{{ error }}</p>
-{% endif %}
-{% if success %}
-<p style="color: green;">{{ success }}</p>
-{% endif %}
+        <label for="history">Medical History Details</label>
+        <textarea name="history" id="history" rows="5" placeholder="Enter medical history..." required></textarea>
 
-<form method="POST" action="{{ url_for('add_medical_history', patient_id=patient.id) }}">
-    <label for="date">Date:</label>
-    <input type="date" name="date" id="date" required>
-
-    <label for="diagnosis">Diagnosis:</label>
-    <input type="text" name="diagnosis" id="diagnosis" required>
-
-    <label for="treatment">Treatment:</label>
-    <input type="text" name="treatment" id="treatment" required>
-
-    <label for="notes">Notes:</label>
-    <textarea name="notes" id="notes" rows="4"></textarea>
-
-    <input type="submit" value="Add Record">
-</form>
-
-<p><a href="{{ url_for('medical_history', patient_id=patient.id) }}">Back to Medical History</a></p>
+        <input type="submit" value="Add History">
+    </form>
+</div>
 {% endblock %}
