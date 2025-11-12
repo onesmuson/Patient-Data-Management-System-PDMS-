@@ -1,22 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Medicine</title>
-</head>
-<body>
-    <h2>Add Medicine</h2>
-    <form method="POST">
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br>
-        <label>Description:</label><br>
-        <input type="text" name="description"><br>
-        <label>Dosage:</label><br>
-        <input type="text" name="dosage"><br>
-        <label>Quantity:</label><br>
-        <input type="number" name="quantity" min="0"><br><br>
-        <button type="submit">Add Medicine</button>
-    </form>
-    <a href="{{ url_for('view_medicines') }}">View All Medicines</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Add Medicine - PDMS{% endblock %}
+
+{% block content %}
+<h2>Add Medicine</h2>
+<form method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+    
+    <label>Description:</label>
+    <input type="text" name="description">
+    
+    <label>Dosage:</label>
+    <input type="text" name="dosage">
+    
+    <label>Quantity:</label>
+    <input type="number" name="quantity">
+    
+    <input type="submit" value="Add Medicine">
+</form>
+{% endblock %}
