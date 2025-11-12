@@ -1,13 +1,15 @@
+import os
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-import os
 
+# =======================
+# App Initialization
+# =======================
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pdms.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_default_secret_key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///pdms.db')
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -74,9 +76,9 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # =======================
-# Routes (Dashboard, Auth, CRUDs)
+# Routes
 # =======================
-@app.route('/')
+@app.route('/', endpoint='dashboard')
 @login_required
 def dashboard():
     total_patients = Patient.query.count()
@@ -96,9 +98,9 @@ def dashboard():
                            appointments=recent_appointments)
 
 # =======================
-# User Auth Routes
+# User Auth
 # =======================
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -107,12 +109,13 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect(url_for('dashboard'))
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('dashboard'))
         else:
             flash('Invalid credentials!', 'error')
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'], endpoint='register')
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -128,14 +131,14 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
-@app.route('/logout')
+@app.route('/logout', endpoint='logout')
 @login_required
 def logout():
     logout_user()
     flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
 
-@app.route('/change_password', methods=['GET', 'POST'])
+@app.route('/change_password', methods=['GET', 'POST'], endpoint='change_password')
 @login_required
 def change_password():
     if request.method == 'POST':
@@ -151,34 +154,141 @@ def change_password():
     return render_template('change_password.html')
 
 # =======================
-# Patients, Medicines, Appointments, Billing, Contacts, Medical History, Reports
-# (keep all your existing CRUD routes here)
+# Patients CRUD
 # =======================
-# [Your existing CRUD routes remain unchanged]
-# =======================
+@app.route('/patients', endpoint='patients')
+@login_required
+def patients():
+    all_patients = Patient.query.all()
+    return render_template('patients.html', patients=all_patients)
 
 # =======================
-# Automatic DB and Admin Creation
+# Medicines CRUD
 # =======================
-def setup_database():
-    with app.app_context():
-        db.create_all()
-        print("✅ Database tables created (if not exist)")
+@app.route('/view_medicines', endpoint='view_medicines')
+@login_required
+def view_medicines():
+    all_meds = Medicine.query.all()
+    return render_template('view_medicines.html', medicines=all_meds)
 
-        # Create default admin if not exists
-        admin_username = "admin"
-        admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")  # use environment variable if available
-        if not User.query.filter_by(username=admin_username).first():
-            admin_user = User(username=admin_username, password=generate_password_hash(admin_password))
-            db.session.add(admin_user)
-            db.session.commit()
-            print(f"✅ Admin user '{admin_username}' created with password '{admin_password}'")
-        else:
-            print(f"ℹ️ Admin user '{admin_username}' already exists")
+@app.route('/add_medicine', methods=['GET', 'POST'], endpoint='add_medicine')
+@login_required
+def add_medicine():
+    if request.method == 'POST':
+        med = Medicine(
+            name=request.form['name'],
+            description=request.form['description'],
+            dosage=request.form['dosage'],
+            quantity=request.form['quantity']
+        )
+        db.session.add(med)
+        db.session.commit()
+        flash('Medicine added successfully!', 'success')
+        return redirect(url_for('view_medicines'))
+    return render_template('add_medicine.html')
+
+# =======================
+# Appointments CRUD
+# =======================
+@app.route('/appointments', methods=['GET', 'POST'], endpoint='appointments')
+@login_required
+def appointments():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        appmnt = Appointment(
+            patient_id=request.form['patient_id'],
+            date=request.form['date'],
+            time=request.form['time'],
+            reason=request.form['reason']
+        )
+        db.session.add(appmnt)
+        db.session.commit()
+        flash('Appointment added!', 'success')
+        return redirect(url_for('appointments'))
+    all_apps = Appointment.query.all()
+    return render_template('appointment.html', patients=patients_list, appointments=all_apps)
+
+# =======================
+# Billing CRUD
+# =======================
+@app.route('/billing', methods=['GET', 'POST'], endpoint='billing')
+@login_required
+def billing():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        bill = Bill(
+            patient_id=request.form['patient_id'],
+            total_amount=request.form['total_amount'],
+            date_issued=request.form['date_issued'],
+            status=request.form['status']
+        )
+        db.session.add(bill)
+        db.session.commit()
+        flash('Bill added successfully!', 'success')
+        return redirect(url_for('billing'))
+    all_bills = Bill.query.all()
+    return render_template('billing.html', patients=patients_list, bills=all_bills)
+
+# =======================
+# Contacts CRUD
+# =======================
+@app.route('/contacts', methods=['GET', 'POST'], endpoint='contacts')
+@login_required
+def contacts():
+    if request.method == 'POST':
+        contact = Contact(
+            name=request.form['name'],
+            email=request.form['email'],
+            message=request.form['message']
+        )
+        db.session.add(contact)
+        db.session.commit()
+        flash('Message sent!', 'success')
+        return redirect(url_for('contacts'))
+    all_msgs = Contact.query.all()
+    return render_template('contacts.html', messages=all_msgs)
+
+# =======================
+# Medical History
+# =======================
+@app.route('/medical_history', endpoint='medical_history')
+@login_required
+def medical_history():
+    histories = MedicalHistory.query.all()
+    return render_template('medical_history.html', histories=histories)
+
+@app.route('/add_medical_history', methods=['GET', 'POST'], endpoint='add_medical_history')
+@login_required
+def add_medical_history():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        history = MedicalHistory(
+            patient_id=request.form['patient_id'],
+            history=request.form['history']
+        )
+        db.session.add(history)
+        db.session.commit()
+        flash('Medical history added!', 'success')
+        return redirect(url_for('medical_history'))
+    return render_template('add_medical_history.html', patients=patients_list)
+
+# =======================
+# Reports placeholder
+# =======================
+@app.route('/reports', endpoint='reports')
+@login_required
+def reports():
+    return render_template('reports.html')
 
 # =======================
 # Run App
 # =======================
 if __name__ == '__main__':
-    setup_database()
+    db.create_all()
+    # create default admin from environment variable
+    admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+    if not User.query.filter_by(username='admin').first():
+        admin = User(username='admin', password=generate_password_hash(admin_password, method='sha256'))
+        db.session.add(admin)
+        db.session.commit()
     app.run(debug=True)
