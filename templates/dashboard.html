@@ -1,93 +1,53 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Welcome to PDMS Dashboard</h1>
-
-<div class="row g-3 mb-4">
+<h2>Dashboard</h2>
+<div class="row mt-4">
     <div class="col-md-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-center bg-primary text-white mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Patients</h5>
-                <p class="card-text fs-3">{{ total_patients }}</p>
+                <h5>Total Patients</h5>
+                <p>{{ total_patients }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-success">
+        <div class="card text-center bg-success text-white mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Medicines</h5>
-                <p class="card-text fs-3">{{ total_medicines }}</p>
+                <h5>Total Medicines</h5>
+                <p>{{ total_medicines }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-warning">
+        <div class="card text-center bg-warning text-dark mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Appointments</h5>
-                <p class="card-text fs-3">{{ total_appointments }}</p>
+                <h5>Total Appointments</h5>
+                <p>{{ total_appointments }}</p>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-white bg-danger">
+        <div class="card text-center bg-danger text-white mb-3">
             <div class="card-body">
-                <h5 class="card-title">Total Bills</h5>
-                <p class="card-text fs-3">{{ total_bills }}</p>
+                <h5>Total Bills</h5>
+                <p>{{ total_bills }}</p>
             </div>
         </div>
     </div>
 </div>
 
-<h3 class="mt-4">Recent Patients</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Condition</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for patient in patients %}
-        <tr>
-            <td>{{ patient.id }}</td>
-            <td>{{ patient.full_name }}</td>
-            <td>{{ patient.age or 'N/A' }}</td>
-            <td>{{ patient.gender or 'N/A' }}</td>
-            <td>{{ patient.condition or 'N/A' }}</td>
-        </tr>
-        {% else %}
-        <tr><td colspan="5">No recent patients found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h4 class="mt-4">Recent Patients</h4>
+<ul class="list-group">
+    {% for patient in patients %}
+        <li class="list-group-item">{{ patient.full_name }} - {{ patient.contact }}</li>
+    {% endfor %}
+</ul>
 
-<h3 class="mt-4">Recent Appointments</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Patient</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Reason</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for appt in appointments %}
-        <tr>
-            <td>{{ appt.id }}</td>
-            <td>{{ appt.patient.full_name if appt.patient else 'N/A' }}</td>
-            <td>{{ appt.date }}</td>
-            <td>{{ appt.time }}</td>
-            <td>{{ appt.reason }}</td>
-        </tr>
-        {% else %}
-        <tr><td colspan="5">No recent appointments found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h4 class="mt-4">Recent Appointments</h4>
+<ul class="list-group">
+    {% for appointment in appointments %}
+        <li class="list-group-item">{{ appointment.patient.full_name }} - {{ appointment.date }} {{ appointment.time }}</li>
+    {% endfor %}
+</ul>
 {% endblock %}
