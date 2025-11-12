@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Add Medicine</h3>
+<form method="POST">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <input type="text" name="name" class="form-control" placeholder="Medicine Name" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="text" name="category" class="form-control" placeholder="Category">
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="number" name="quantity" class="form-control" placeholder="Quantity">
+    </div>
+    <div class="col-md-6 mb-3">
+      <input type="number" name="price" step="0.01" class="form-control" placeholder="Price">
+    </div>
+  </div>
+  <button class="btn btn-primary">Add Medicine</button>
+</form>
+{% endblock %}
