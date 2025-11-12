@@ -1,25 +1,17 @@
 {% extends "base.html" %}
+{% block title %}Medical History{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Patient Medical Histories</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Patient Name</th>
-                <th>History</th>
-                <th>Date Added</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in histories %}
-            <tr>
-                <td>{{ record.patient.full_name }}</td>
-                <td>{{ record.history }}</td>
-                <td>{{ record.date_added }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<h1>Medical History</h1>
+<table>
+    <tr><th>ID</th><th>Patient</th><th>History</th></tr>
+    {% for h in histories %}
+    <tr>
+        <td>{{ h.id }}</td>
+        <td>{{ h.patient.full_name }}</td>
+        <td>{{ h.history }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{{ url_for('add_medical_history') }}" class="btn">Add Medical History</a>
 {% endblock %}
