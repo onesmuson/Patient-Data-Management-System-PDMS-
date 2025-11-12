@@ -1,27 +1,7 @@
 {% extends "base.html" %}
+{% block title %}Reports{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Reports</h2>
-
-    <h3>Patient Summary</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Patient Name</th>
-                <th>Total Appointments</th>
-                <th>Total Bills</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for patient in patients %}
-            <tr>
-                <td>{{ patient.full_name }}</td>
-                <td>{{ patient.appointments|length }}</td>
-                <td>{{ patient.bills|sum(attribute='total_amount') }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+<h1>Reports</h1>
+<p>Coming soon: generate reports for patients, billing, appointments, and medicines.</p>
 {% endblock %}
