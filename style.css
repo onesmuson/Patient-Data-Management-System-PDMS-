@@ -1,28 +1,21 @@
-/* General styling */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
     margin: 0;
     padding: 0;
 }
 
-.container {
-    width: 80%;
-    margin: auto;
-    padding: 20px;
-}
-
-/* Navigation */
 nav {
-    background-color: #343a40;
-    color: #fff;
-    padding: 15px;
+    background-color: #0044cc;
+    color: white;
+    padding: 10px;
+    display: flex;
+    gap: 15px;
 }
 
 nav a {
-    color: #fff;
+    color: white;
     text-decoration: none;
-    margin-right: 15px;
     font-weight: bold;
 }
 
@@ -30,15 +23,55 @@ nav a:hover {
     text-decoration: underline;
 }
 
-/* Tables */
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+h2, h1 {
+    color: #0044cc;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+}
+
+form input, form select, form textarea {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+form input[type="submit"] {
+    margin-top: 15px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #002a80;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 table, th, td {
-    border: 1px solid #dee2e6;
+    border: 1px solid #ccc;
 }
 
 th, td {
@@ -46,47 +79,10 @@ th, td {
     text-align: left;
 }
 
-th {
-    background-color: #343a40;
-    color: #fff;
-}
-
-/* Forms */
-form {
-    margin-top: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-input[type="text"], input[type="number"], input[type="email"], input[type="password"], textarea, select {
-    width: 100%;
-    padding: 8px;
-    margin: 6px 0 12px 0;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-}
-
-input[type="submit"], button {
-    background-color: #343a40;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-input[type="submit"]:hover, button:hover {
-    background-color: #495057;
-}
-
-/* Flash messages */
 .flash-success {
     background-color: #d4edda;
     color: #155724;
     padding: 10px;
-    border-radius: 4px;
     margin-bottom: 10px;
 }
 
@@ -94,19 +90,12 @@ input[type="submit"]:hover, button:hover {
     background-color: #f8d7da;
     color: #721c24;
     padding: 10px;
-    border-radius: 4px;
     margin-bottom: 10px;
 }
 
-/* Dashboard */
 .card {
-    background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-h1, h2, h3 {
-    color: #343a40;
+    background-color: #e6f0ff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
 }
