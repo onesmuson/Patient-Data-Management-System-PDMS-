@@ -2,40 +2,92 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1>Welcome to PDMS Dashboard</h1>
-<div class="dashboard-cards">
-    <div class="card"><i class="fa-solid fa-user-injured"></i><h2>{{ total_patients }}</h2><p>Patients</p></div>
-    <div class="card"><i class="fa-solid fa-pills"></i><h2>{{ total_medicines }}</h2><p>Medicines</p></div>
-    <div class="card"><i class="fa-solid fa-calendar-check"></i><h2>{{ total_appointments }}</h2><p>Appointments</p></div>
-    <div class="card"><i class="fa-solid fa-file-invoice-dollar"></i><h2>{{ total_bills }}</h2><p>Bills</p></div>
-    <div class="card"><i class="fa-solid fa-envelope"></i><h2>{{ total_messages }}</h2><p>Messages</p></div>
+<h1 class="mb-4">Welcome to PDMS Dashboard</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Patients</h5>
+                <p class="card-text fs-3">{{ total_patients }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Medicines</h5>
+                <p class="card-text fs-3">{{ total_medicines }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Total Appointments</h5>
+                <p class="card-text fs-3">{{ total_appointments }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Total Bills</h5>
+                <p class="card-text fs-3">{{ total_bills }}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<h2>Recent Patients</h2>
-<table>
-    <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Contact</th></tr>
-    {% for p in patients %}
-    <tr>
-        <td>{{ p.id }}</td>
-        <td>{{ p.full_name }}</td>
-        <td>{{ p.age }}</td>
-        <td>{{ p.gender }}</td>
-        <td>{{ p.contact }}</td>
-    </tr>
-    {% endfor %}
+<h3 class="mt-4">Recent Patients</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Condition</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in patients %}
+        <tr>
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.full_name }}</td>
+            <td>{{ patient.age or 'N/A' }}</td>
+            <td>{{ patient.gender or 'N/A' }}</td>
+            <td>{{ patient.condition or 'N/A' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No recent patients found.</td></tr>
+        {% endfor %}
+    </tbody>
 </table>
 
-<h2>Recent Appointments</h2>
-<table>
-    <tr><th>ID</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr>
-    {% for a in appointments %}
-    <tr>
-        <td>{{ a.id }}</td>
-        <td>{{ a.patient.full_name }}</td>
-        <td>{{ a.date }}</td>
-        <td>{{ a.time }}</td>
-        <td>{{ a.reason }}</td>
-    </tr>
-    {% endfor %}
+<h3 class="mt-4">Recent Appointments</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appt in appointments %}
+        <tr>
+            <td>{{ appt.id }}</td>
+            <td>{{ appt.patient.full_name if appt.patient else 'N/A' }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.time }}</td>
+            <td>{{ appt.reason }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No recent appointments found.</td></tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
