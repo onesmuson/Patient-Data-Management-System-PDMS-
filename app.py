@@ -5,7 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # =======================
-# App Initialization
+# APP INITIALIZATION
 # =======================
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_default_secret_key')
@@ -150,12 +150,31 @@ def change_password():
     return render_template('change_password.html')
 
 # =======================
-# PATIENTS
+# PATIENTS (FIXED)
 # =======================
-@app.route('/patients', endpoint='patients')
+@app.route('/patients', methods=['GET', 'POST'], endpoint='patients')
 @login_required
 def patients():
-    return render_template('patients.html', patients=Patient.query.all())
+    if request.method == 'POST':
+        try:
+            new_patient = Patient(
+                full_name=request.form['full_name'],
+                age=request.form.get('age'),
+                gender=request.form.get('gender'),
+                contact=request.form.get('contact'),
+                address=request.form.get('address'),
+                condition=request.form.get('condition')
+            )
+            db.session.add(new_patient)
+            db.session.commit()
+            flash('Patient added successfully!', 'success')
+        except Exception as e:
+            print("Error adding patient:", e)
+            flash('Failed to add patient.', 'error')
+        return redirect(url_for('patients'))
+
+    all_patients = Patient.query.all()
+    return render_template('patients.html', patients=all_patients)
 
 # =======================
 # MEDICINES
@@ -200,7 +219,7 @@ def appointments():
     return render_template('appointment.html', patients=patients_list, appointments=Appointment.query.all())
 
 # =======================
-# BILLING (FIXED)
+# BILLING
 # =======================
 @app.route('/billing', methods=['GET', 'POST'], endpoint='billing')
 @login_required
