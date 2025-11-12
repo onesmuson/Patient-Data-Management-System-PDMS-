@@ -3,20 +3,13 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 # =======================
 # App Initialization
 # =======================
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app)  # For Render behind proxies
-
-# Environment Variables
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your_default_secret_key')
-
-# Database setup: persistent path for Render
-db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pdms.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', f'sqlite:///{db_path}')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///pdms.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -84,6 +77,17 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # =======================
+# Create Tables & Default Admin
+# =======================
+with app.app_context():
+    db.create_all()
+    admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+    if not User.query.filter_by(username='admin').first():
+        admin = User(username='admin', password=generate_password_hash(admin_password, method='sha256'))
+        db.session.add(admin)
+        db.session.commit()
+
+# =======================
 # Routes
 # =======================
 @app.route('/', endpoint='dashboard')
@@ -96,7 +100,7 @@ def dashboard():
     total_messages = Contact.query.count()
     recent_patients = Patient.query.order_by(Patient.id.desc()).limit(5).all()
     recent_appointments = Appointment.query.order_by(Appointment.id.desc()).limit(5).all()
-    return render_template('dashboard.html',
+    return render_template('dashboard.html', 
                            total_patients=total_patients,
                            total_medicines=total_medicines,
                            total_appointments=total_appointments,
@@ -105,6 +109,9 @@ def dashboard():
                            patients=recent_patients,
                            appointments=recent_appointments)
 
+# =======================
+# User Auth
+# =======================
 @app.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
     if request.method == 'POST':
@@ -143,41 +150,150 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
 
-# ----------------------
-# Other routes remain same
-# ----------------------
-# You can copy all your patients, medicines, appointments, billing, contacts, medical history routes here
-# Make sure you have endpoint names for all url_for references
+@app.route('/change_password', methods=['GET', 'POST'], endpoint='change_password')
+@login_required
+def change_password():
+    if request.method == 'POST':
+        old_pass = request.form['old_password']
+        new_pass = request.form['new_password']
+        if check_password_hash(current_user.password, old_pass):
+            current_user.password = generate_password_hash(new_pass, method='sha256')
+            db.session.commit()
+            flash('Password changed successfully!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Old password is incorrect!', 'error')
+    return render_template('change_password.html')
 
 # =======================
-# Error Handling
+# Patients CRUD
 # =======================
-@app.errorhandler(500)
-def internal_error(error):
-    return "500 Internal Server Error. Check logs for details.", 500
-
-@app.errorhandler(404)
-def not_found_error(error):
-    return "404 Not Found.", 404
+@app.route('/patients', endpoint='patients')
+@login_required
+def patients():
+    all_patients = Patient.query.all()
+    return render_template('patients.html', patients=all_patients)
 
 # =======================
-# Run App
+# Medicines CRUD
+# =======================
+@app.route('/view_medicines', endpoint='view_medicines')
+@login_required
+def view_medicines():
+    all_meds = Medicine.query.all()
+    return render_template('view_medicines.html', medicines=all_meds)
+
+@app.route('/add_medicine', methods=['GET', 'POST'], endpoint='add_medicine')
+@login_required
+def add_medicine():
+    if request.method == 'POST':
+        med = Medicine(
+            name=request.form['name'],
+            description=request.form['description'],
+            dosage=request.form['dosage'],
+            quantity=request.form['quantity']
+        )
+        db.session.add(med)
+        db.session.commit()
+        flash('Medicine added successfully!', 'success')
+        return redirect(url_for('view_medicines'))
+    return render_template('add_medicine.html')
+
+# =======================
+# Appointments CRUD
+# =======================
+@app.route('/appointments', methods=['GET', 'POST'], endpoint='appointments')
+@login_required
+def appointments():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        appmnt = Appointment(
+            patient_id=request.form['patient_id'],
+            date=request.form['date'],
+            time=request.form['time'],
+            reason=request.form['reason']
+        )
+        db.session.add(appmnt)
+        db.session.commit()
+        flash('Appointment added!', 'success')
+        return redirect(url_for('appointments'))
+    all_apps = Appointment.query.all()
+    return render_template('appointment.html', patients=patients_list, appointments=all_apps)
+
+# =======================
+# Billing CRUD
+# =======================
+@app.route('/billing', methods=['GET', 'POST'], endpoint='billing')
+@login_required
+def billing():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        bill = Bill(
+            patient_id=request.form['patient_id'],
+            total_amount=request.form['total_amount'],
+            date_issued=request.form['date_issued'],
+            status=request.form['status']
+        )
+        db.session.add(bill)
+        db.session.commit()
+        flash('Bill added successfully!', 'success')
+        return redirect(url_for('billing'))
+    all_bills = Bill.query.all()
+    return render_template('billing.html', patients=patients_list, bills=all_bills)
+
+# =======================
+# Contacts CRUD
+# =======================
+@app.route('/contacts', methods=['GET', 'POST'], endpoint='contacts')
+@login_required
+def contacts():
+    if request.method == 'POST':
+        contact = Contact(
+            name=request.form['name'],
+            email=request.form['email'],
+            message=request.form['message']
+        )
+        db.session.add(contact)
+        db.session.commit()
+        flash('Message sent!', 'success')
+        return redirect(url_for('contacts'))
+    all_msgs = Contact.query.all()
+    return render_template('contacts.html', messages=all_msgs)
+
+# =======================
+# Medical History
+# =======================
+@app.route('/medical_history', endpoint='medical_history')
+@login_required
+def medical_history():
+    histories = MedicalHistory.query.all()
+    return render_template('medical_history.html', histories=histories)
+
+@app.route('/add_medical_history', methods=['GET', 'POST'], endpoint='add_medical_history')
+@login_required
+def add_medical_history():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        history = MedicalHistory(
+            patient_id=request.form['patient_id'],
+            history=request.form['history']
+        )
+        db.session.add(history)
+        db.session.commit()
+        flash('Medical history added!', 'success')
+        return redirect(url_for('medical_history'))
+    return render_template('add_medical_history.html', patients=patients_list)
+
+# =======================
+# Reports placeholder
+# =======================
+@app.route('/reports', endpoint='reports')
+@login_required
+def reports():
+    return render_template('reports.html')
+
+# =======================
+# Run App (local only)
 # =======================
 if __name__ == '__main__':
-    # Ensure db folder exists
-    db_dir = os.path.dirname(db_path)
-    if not os.path.exists(db_dir):
-        os.makedirs(db_dir)
-
-    db.create_all()
-    
-    # Default admin user
-    admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
-    if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', password=generate_password_hash(admin_password, method='sha256'))
-        db.session.add(admin)
-        db.session.commit()
-    
-    # Bind to 0.0.0.0 and port from Render
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
