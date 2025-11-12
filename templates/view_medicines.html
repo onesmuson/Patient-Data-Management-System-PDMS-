@@ -1,19 +1,30 @@
-{% extends 'base.html' %}
-{% block content %}
-<h3>Medicine Inventory</h3>
-<a href="{{ url_for('add_medicine') }}" class="btn btn-success mb-3">Add New Medicine</a>
-<table class="table table-bordered table-striped">
-  <tr>
-    <th>ID</th><th>Name</th><th>Category</th><th>Quantity</th><th>Price</th>
-  </tr>
-  {% for m in medicines %}
-  <tr>
-    <td>{{ m.id }}</td>
-    <td>{{ m.name }}</td>
-    <td>{{ m.category }}</td>
-    <td>{{ m.quantity }}</td>
-    <td>{{ m.price }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Medicines</title>
+</head>
+<body>
+    <h2>All Medicines</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Dosage</th>
+            <th>Quantity</th>
+        </tr>
+        {% for med in medicines %}
+        <tr>
+            <td>{{ med.id }}</td>
+            <td>{{ med.name }}</td>
+            <td>{{ med.description }}</td>
+            <td>{{ med.dosage }}</td>
+            <td>{{ med.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('add_medicine') }}">Add New Medicine</a> |
+    <a href="{{ url_for('index') }}">Dashboard</a>
+</body>
+</html>
