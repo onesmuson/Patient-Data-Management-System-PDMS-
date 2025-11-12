@@ -1,59 +1,47 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-# ---------- User Table ----------
-class User(UserMixin, db.Model):
+# ---------------- MODELS ---------------------
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-
-# ---------- Patient Table ----------
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    full_name = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer)
     gender = db.Column(db.String(10))
-    contact = db.Column(db.String(20))
-    address = db.Column(db.String(200))
-    medical_history = db.Column(db.Text)
+    condition = db.Column(db.String(200))
+    contact = db.Column(db.String(100))
+    address = db.Column(db.String(150))
 
-
-# ---------- Medicine Table ----------
 class Medicine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255))
-    quantity = db.Column(db.Integer, default=0)
-    price = db.Column(db.Float, default=0.0)
+    dosage = db.Column(db.String(100))
+    quantity = db.Column(db.Integer)
 
-
-# ---------- Appointment Table ----------
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
     date = db.Column(db.String(50))
     time = db.Column(db.String(50))
-    doctor = db.Column(db.String(100))
-    reason = db.Column(db.String(255))
+    reason = db.Column(db.String(200))
     patient = db.relationship('Patient', backref='appointments')
 
-
-# ---------- Billing Table ----------
-class Billing(db.Model):
+class Bill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
-    amount = db.Column(db.Float, default=0.0)
-    status = db.Column(db.String(20), default='Unpaid')
+    total_amount = db.Column(db.Float, nullable=False)
+    date_issued = db.Column(db.String(50))
+    status = db.Column(db.String(20), default="Unpaid")
     patient = db.relationship('Patient', backref='bills')
 
-
-# ---------- Contact Table ----------
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100))
-    phone = db.Column(db.String(50))
-    message = db.Column(db.Text)
+    message = db.Column(db.String(300))
