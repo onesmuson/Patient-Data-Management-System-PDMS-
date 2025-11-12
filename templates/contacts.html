@@ -1,16 +1,38 @@
-{% extends 'base.html' %}
-{% block content %}
-<h3>Contact Us</h3>
-<form method="POST">
-  <div class="mb-3">
-    <input type="text" name="name" class="form-control" placeholder="Your Name" required>
-  </div>
-  <div class="mb-3">
-    <input type="email" name="email" class="form-control" placeholder="Email" required>
-  </div>
-  <div class="mb-3">
-    <textarea name="message" class="form-control" rows="4" placeholder="Message"></textarea>
-  </div>
-  <button class="btn btn-primary">Send Message</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+</head>
+<body>
+    <h2>Send a Message</h2>
+    <form method="POST">
+        <label>Name:</label><br>
+        <input type="text" name="name" required><br>
+        <label>Email:</label><br>
+        <input type="email" name="email"><br>
+        <label>Message:</label><br>
+        <textarea name="message" rows="4" cols="50"></textarea><br><br>
+        <button type="submit">Send</button>
+    </form>
+    <hr>
+    <h3>All Messages</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+        </tr>
+        {% for msg in messages %}
+        <tr>
+            <td>{{ msg.id }}</td>
+            <td>{{ msg.name }}</td>
+            <td>{{ msg.email }}</td>
+            <td>{{ msg.message }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Dashboard</a>
+</body>
+</html>
