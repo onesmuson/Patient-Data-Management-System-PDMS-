@@ -1,20 +1,15 @@
 {% extends "base.html" %}
+{% block title %}Add Medical History{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Add Medical History</h2>
-    <form method="POST" action="{{ url_for('add_medical_history') }}">
-        <label for="patient_id">Select Patient</label>
-        <select name="patient_id" id="patient_id" required>
-            {% for patient in patients %}
-            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="history">Medical History Details</label>
-        <textarea name="history" id="history" rows="5" placeholder="Enter medical history..." required></textarea>
-
-        <input type="submit" value="Add History">
-    </form>
-</div>
+<h1>Add Medical History</h1>
+<form method="POST">
+    <select name="patient_id">
+        {% for p in patients %}
+            <option value="{{ p.id }}">{{ p.full_name }}</option>
+        {% endfor %}
+    </select>
+    <textarea name="history" placeholder="Enter medical history"></textarea>
+    <button type="submit">Add History</button>
+</form>
 {% endblock %}
