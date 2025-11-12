@@ -1,38 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Contacts</title>
-</head>
-<body>
-    <h2>Send a Message</h2>
-    <form method="POST">
-        <label>Name:</label><br>
-        <input type="text" name="name" required><br>
-        <label>Email:</label><br>
-        <input type="email" name="email"><br>
-        <label>Message:</label><br>
-        <textarea name="message" rows="4" cols="50"></textarea><br><br>
-        <button type="submit">Send</button>
-    </form>
-    <hr>
-    <h3>All Messages</h3>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Message</th>
-        </tr>
-        {% for msg in messages %}
-        <tr>
-            <td>{{ msg.id }}</td>
-            <td>{{ msg.name }}</td>
-            <td>{{ msg.email }}</td>
-            <td>{{ msg.message }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="{{ url_for('index') }}">Dashboard</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Contacts - PDMS{% endblock %}
+
+{% block content %}
+<h2>Send Message</h2>
+<form method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+    
+    <label>Email:</label>
+    <input type="email" name="email">
+    
+    <label>Message:</label>
+    <textarea name="message" rows="4"></textarea>
+    
+    <input type="submit" value="Send Message">
+</form>
+
+<h2>All Messages</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Message</th>
+    </tr>
+    {% for msg in messages %}
+    <tr>
+        <td>{{ msg.id }}</td>
+        <td>{{ msg.name }}</td>
+        <td>{{ msg.email }}</td>
+        <td>{{ msg.message }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
