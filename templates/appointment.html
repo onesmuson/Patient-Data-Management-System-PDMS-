@@ -1,44 +1,32 @@
 {% extends "base.html" %}
-
 {% block content %}
 <h2>Appointments</h2>
-<form method="POST" class="mb-4">
-    <div class="row">
-        <div class="col-md-3">
-            <select name="patient_id" class="form-select" required>
-                <option value="">Select Patient</option>
-                {% for patient in patients %}
-                    <option value="{{ patient.id }}">{{ patient.full_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-2"><input type="date" name="date" class="form-control" required></div>
-        <div class="col-md-2"><input type="time" name="time" class="form-control" required></div>
-        <div class="col-md-3"><input type="text" name="reason" class="form-control" placeholder="Reason" required></div>
-        <div class="col-md-2"><button type="submit" class="btn btn-primary">Add Appointment</button></div>
-    </div>
+<form method="POST">
+<div class="mb-3"><label>Patient</label><select name="patient_id" class="form-select" required>
+<option value="">Select Patient</option>
+{% for patient in patients %}
+<option value="{{ patient.id }}">{{ patient.full_name }}</option>
+{% endfor %}
+</select></div>
+<div class="mb-3"><label>Date</label><input type="date" name="date" class="form-control" required></div>
+<div class="mb-3"><label>Time</label><input type="time" name="time" class="form-control" required></div>
+<div class="mb-3"><label>Reason</label><textarea name="reason" class="form-control"></textarea></div>
+<button type="submit" class="btn btn-primary">Add Appointment</button>
 </form>
 
+<hr>
 <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Patient</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Reason</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for app in appointments %}
-        <tr>
-            <td>{{ app.id }}</td>
-            <td>{{ app.patient.full_name }}</td>
-            <td>{{ app.date }}</td>
-            <td>{{ app.time }}</td>
-            <td>{{ app.reason }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+<thead><tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr></thead>
+<tbody>
+{% for appointment in appointments %}
+<tr>
+<td>{{ loop.index }}</td>
+<td>{{ appointment.patient.full_name }}</td>
+<td>{{ appointment.date }}</td>
+<td>{{ appointment.time }}</td>
+<td>{{ appointment.reason }}</td>
+</tr>
+{% endfor %}
+</tbody>
 </table>
 {% endblock %}
