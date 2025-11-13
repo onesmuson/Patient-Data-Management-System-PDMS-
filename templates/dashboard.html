@@ -1,53 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card text-center bg-primary text-white mb-3">
-            <div class="card-body">
-                <h5>Total Patients</h5>
-                <p>{{ total_patients }}</p>
+<div class="container mt-4">
+    <!-- Welcome Message -->
+    <div class="alert alert-success">
+        <h4>{{ welcome_message }}</h4>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center bg-primary text-white mb-3">
+                <div class="card-body">
+                    <h5>Total Patients</h5>
+                    <p>{{ total_patients }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body">
+                    <h5>Total Medicines</h5>
+                    <p>{{ total_medicines }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-warning text-dark mb-3">
+                <div class="card-body">
+                    <h5>Total Appointments</h5>
+                    <p>{{ total_appointments }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-danger text-white mb-3">
+                <div class="card-body">
+                    <h5>Total Bills</h5>
+                    <p>{{ total_bills }}</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-success text-white mb-3">
-            <div class="card-body">
-                <h5>Total Medicines</h5>
-                <p>{{ total_medicines }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-warning text-dark mb-3">
-            <div class="card-body">
-                <h5>Total Appointments</h5>
-                <p>{{ total_appointments }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-danger text-white mb-3">
-            <div class="card-body">
-                <h5>Total Bills</h5>
-                <p>{{ total_bills }}</p>
-            </div>
-        </div>
-    </div>
+
+    <!-- Recent Patients -->
+    <h4 class="mt-4">Recent Patients</h4>
+    <ul class="list-group">
+        {% for patient in patients %}
+            <li class="list-group-item">{{ patient.full_name }} - {{ patient.contact }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Recent Appointments -->
+    <h4 class="mt-4">Recent Appointments</h4>
+    <ul class="list-group">
+        {% for appointment in appointments %}
+            <li class="list-group-item">{{ appointment.patient.full_name }} - {{ appointment.date }} {{ appointment.time }}</li>
+        {% endfor %}
+    </ul>
 </div>
-
-<h4 class="mt-4">Recent Patients</h4>
-<ul class="list-group">
-    {% for patient in patients %}
-        <li class="list-group-item">{{ patient.full_name }} - {{ patient.contact }}</li>
-    {% endfor %}
-</ul>
-
-<h4 class="mt-4">Recent Appointments</h4>
-<ul class="list-group">
-    {% for appointment in appointments %}
-        <li class="list-group-item">{{ appointment.patient.full_name }} - {{ appointment.date }} {{ appointment.time }}</li>
-    {% endfor %}
-</ul>
 {% endblock %}
