@@ -1,32 +1,73 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2>Appointments</h2>
-<form method="POST">
-<div class="mb-3"><label>Patient</label><select name="patient_id" class="form-select" required>
-<option value="">Select Patient</option>
-{% for patient in patients %}
-<option value="{{ patient.id }}">{{ patient.full_name }}</option>
-{% endfor %}
-</select></div>
-<div class="mb-3"><label>Date</label><input type="date" name="date" class="form-control" required></div>
-<div class="mb-3"><label>Time</label><input type="time" name="time" class="form-control" required></div>
-<div class="mb-3"><label>Reason</label><textarea name="reason" class="form-control"></textarea></div>
-<button type="submit" class="btn btn-primary">Add Appointment</button>
-</form>
 
-<hr>
-<table class="table table-striped">
-<thead><tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr></thead>
-<tbody>
-{% for appointment in appointments %}
-<tr>
-<td>{{ loop.index }}</td>
-<td>{{ appointment.patient.full_name }}</td>
-<td>{{ appointment.date }}</td>
-<td>{{ appointment.time }}</td>
-<td>{{ appointment.reason }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+<div class="row">
+  <!-- Add Appointment Form -->
+  <div class="col-md-4">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5>Schedule Appointment</h5>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('appointments') }}">
+          <div class="mb-3">
+            <label for="patient_id" class="form-label">Patient</label>
+            <select name="patient_id" id="patient_id" class="form-select" required>
+              <option value="">Select Patient</option>
+              {% for patient in patients %}
+                <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" name="date" id="date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="time" class="form-label">Time</label>
+            <input type="time" name="time" id="time" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-success w-100">Add Appointment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointments Table -->
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        <h5>All Appointments</h5>
+      </div>
+      <div class="card-body table-responsive">
+        {% if appointments %}
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for appointment in appointments %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ appointment.patient.full_name if appointment.patient else 'Unknown' }}</td>
+              <td>{{ appointment.date }}</td>
+              <td>{{ appointment.time }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="text-muted">No appointments found.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
