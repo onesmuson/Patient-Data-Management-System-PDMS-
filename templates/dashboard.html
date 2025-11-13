@@ -1,32 +1,68 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>{{ welcome }}</h2>
+<h2>Welcome, {{ current_user.username }}!</h2>
+<p class="text-muted">Here's a quick overview of your clinic data:</p>
 
 <div class="row mt-4">
-    <div class="col-md-3"><div class="card text-center bg-primary text-white mb-3"><div class="card-body"><h5>Total Patients</h5><p>{{ total_patients }}</p></div></div></div>
-    <div class="col-md-3"><div class="card text-center bg-success text-white mb-3"><div class="card-body"><h5>Total Medicines</h5><p>{{ total_medicines }}</p></div></div></div>
-    <div class="col-md-3"><div class="card text-center bg-warning text-dark mb-3"><div class="card-body"><h5>Total Appointments</h5><p>{{ total_appointments }}</p></div></div></div>
-    <div class="col-md-3"><div class="card text-center bg-danger text-white mb-3"><div class="card-body"><h5>Total Bills</h5><p>{{ total_bills }}</p></div></div></div>
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white mb-3">
+            <div class="card-body">
+                <h5>Total Patients</h5>
+                <p>{{ total_patients }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white mb-3">
+            <div class="card-body">
+                <h5>Total Medicines</h5>
+                <p>{{ total_medicines }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-dark mb-3">
+            <div class="card-body">
+                <h5>Total Appointments</h5>
+                <p>{{ total_appointments }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-danger text-white mb-3">
+            <div class="card-body">
+                <h5>Total Bills</h5>
+                <p>{{ total_bills }}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <h4 class="mt-4">Recent Patients</h4>
 <ul class="list-group">
-    {% for patient in patients %}
+    {% for patient in recent_patients %}
         <li class="list-group-item">{{ patient.full_name }} - {{ patient.contact }}</li>
+    {% else %}
+        <li class="list-group-item text-muted">No recent patients</li>
     {% endfor %}
 </ul>
 
 <h4 class="mt-4">Recent Appointments</h4>
 <ul class="list-group">
-    {% for appointment in appointments %}
+    {% for appointment in recent_appointments %}
         <li class="list-group-item">{{ appointment.patient.full_name }} - {{ appointment.date }} {{ appointment.time }}</li>
+    {% else %}
+        <li class="list-group-item text-muted">No recent appointments</li>
     {% endfor %}
 </ul>
 
-<h4 class="mt-4">Recent Medical Histories</h4>
+<h4 class="mt-4">Recent Bills</h4>
 <ul class="list-group">
-    {% for history in histories %}
-        <li class="list-group-item">{{ history.patient.full_name }} - {{ history.history }}</li>
+    {% for bill in recent_bills %}
+        <li class="list-group-item">{{ bill.patient.full_name }} - {{ bill.total_amount }} ({{ bill.status }})</li>
+    {% else %}
+        <li class="list-group-item text-muted">No bills yet</li>
     {% endfor %}
 </ul>
 {% endblock %}
