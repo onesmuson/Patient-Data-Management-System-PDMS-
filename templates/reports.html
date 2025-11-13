@@ -1,5 +1,39 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h2>Reports</h2>
-<p>Reports section coming soon. You can add graphs, PDF exports, or other analytics here.</p>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-primary text-white">
+    <h5>View Reports</h5>
+  </div>
+  <div class="card-body table-responsive">
+    {% if reports %}
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Report Type</th>
+          <th>Description</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ report.patient.full_name if report.patient else 'Unknown' }}</td>
+          <td>{{ report.type }}</td>
+          <td>{{ report.description }}</td>
+          <td>{{ report.date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p class="text-muted">No reports found.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
