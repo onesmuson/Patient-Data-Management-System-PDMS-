@@ -16,11 +16,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Make current_user available in all templates
-@app.context_processor
-def inject_user():
-    return dict(current_user=current_user)
-
 # =======================
 # MODELS
 # =======================
@@ -37,7 +32,7 @@ class Patient(db.Model):
     contact = db.Column(db.String(50))
     address = db.Column(db.String(200))
     condition = db.Column(db.String(200))
-    prescribed_drug = db.Column(db.String(200))  # NEW field
+    prescribed_drug = db.Column(db.String(200))  # New field
 
 class Medicine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -56,11 +51,11 @@ class Appointment(db.Model):
 
 class Bill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'))
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
     patient = db.relationship('Patient', backref='bills')
-    total_amount = db.Column(db.Float)
-    date_issued = db.Column(db.String(20))
-    status = db.Column(db.String(50))
+    total_amount = db.Column(db.Float, nullable=False)
+    date_issued = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
 
 class MedicalHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -93,7 +88,7 @@ with app.app_context():
         db.session.commit()
 
 # =======================
-# DASHBOARD
+# ROUTES
 # =======================
 @app.route('/', endpoint='dashboard')
 @login_required
@@ -103,11 +98,17 @@ def dashboard():
         'total_medicines': Medicine.query.count(),
         'total_appointments': Appointment.query.count(),
         'total_bills': Bill.query.count(),
+        'total_histories': MedicalHistory.query.count(),
         'total_messages': Contact.query.count()
     }
     recent_patients = Patient.query.order_by(Patient.id.desc()).limit(5).all()
     recent_appointments = Appointment.query.order_by(Appointment.id.desc()).limit(5).all()
-    return render_template('dashboard.html', **stats, patients=recent_patients, appointments=recent_appointments, welcome=f"Welcome {current_user.username}!")
+    recent_histories = MedicalHistory.query.order_by(MedicalHistory.id.desc()).limit(5).all()
+    return render_template('dashboard.html', **stats,
+                           patients=recent_patients,
+                           appointments=recent_appointments,
+                           histories=recent_histories,
+                           welcome=f"Welcome {current_user.username}!")
 
 # =======================
 # AUTH ROUTES
@@ -123,6 +124,13 @@ def login():
         flash('Invalid username or password.', 'error')
     return render_template('login.html')
 
+@app.route('/logout', endpoint='logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logged out successfully.', 'success')
+    return redirect(url_for('login'))
+
 @app.route('/register', methods=['GET', 'POST'], endpoint='register')
 def register():
     if request.method == 'POST':
@@ -136,38 +144,19 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
-@app.route('/logout', endpoint='logout')
-@login_required
-def logout():
-    logout_user()
-    flash('Logged out successfully.', 'success')
-    return redirect(url_for('login'))
-
-@app.route('/change_password', methods=['GET', 'POST'], endpoint='change_password')
-@login_required
-def change_password():
+@app.route('/reset_password', methods=['GET', 'POST'], endpoint='reset_password')
+def reset_password():
     if request.method == 'POST':
-        if check_password_hash(current_user.password, request.form['old_password']):
-            current_user.password = generate_password_hash(request.form['new_password'], method='sha256')
-            db.session.commit()
-            flash('Password changed successfully.', 'success')
-            return redirect(url_for('dashboard'))
-        flash('Old password is incorrect.', 'error')
-    return render_template('change_password.html')
-
-@app.route('/forgot_password', methods=['GET', 'POST'], endpoint='forgot_password')
-def forgot_password():
-    if request.method == 'POST':
-        username = request.form['username']
+        username = request.form.get('username')
+        new_password = request.form.get('new_password')
         user = User.query.filter_by(username=username).first()
-        if not user:
-            flash("User not found.", "error")
-            return redirect(url_for('forgot_password'))
-        user.password = generate_password_hash("newpassword123", method="sha256")
-        db.session.commit()
-        flash("Password has been reset. Your new password is 'newpassword123'. Please change after login.", "success")
-        return redirect(url_for('login'))
-    return render_template('forgot_password.html')
+        if user:
+            user.password = generate_password_hash(new_password, method='sha256')
+            db.session.commit()
+            flash('Password reset successfully! You can now log in.', 'success')
+            return redirect(url_for('login'))
+        flash('Username not found.', 'error')
+    return render_template('reset_password.html')
 
 # =======================
 # PATIENTS
@@ -176,18 +165,26 @@ def forgot_password():
 @login_required
 def patients():
     if request.method == 'POST':
+        full_name = request.form.get('full_name')
+        age = request.form.get('age') or None
+        gender = request.form.get('gender')
+        contact = request.form.get('contact')
+        address = request.form.get('address')
+        condition = request.form.get('condition')
+        prescribed_drug = request.form.get('prescribed_drug')
         db.session.add(Patient(
-            full_name=request.form['full_name'],
-            age=request.form.get('age'),
-            gender=request.form.get('gender'),
-            contact=request.form.get('contact'),
-            address=request.form.get('address'),
-            condition=request.form.get('condition'),
-            prescribed_drug=request.form.get('prescribed_drug')
+            full_name=full_name,
+            age=age,
+            gender=gender,
+            contact=contact,
+            address=address,
+            condition=condition,
+            prescribed_drug=prescribed_drug
         ))
         db.session.commit()
-        flash("Patient added successfully.", "success")
+        flash('Patient added successfully.', 'success')
         return redirect(url_for('patients'))
+
     all_patients = Patient.query.all()
     return render_template('patients.html', patients=all_patients)
 
@@ -198,25 +195,74 @@ def patients():
 @login_required
 def billing():
     patients_list = Patient.query.all()
+    bills = Bill.query.order_by(Bill.id.desc()).all()
+
     if request.method == 'POST':
-        patient_id = request.form.get('patient_id')
-        patient = Patient.query.get(patient_id)
-        if not patient:
-            flash("Invalid patient selected.", "error")
+        try:
+            patient_id = request.form.get('patient_id')
+            total_amount = request.form.get('total_amount')
+            date_issued = request.form.get('date_issued')
+            status = request.form.get('status')
+
+            if not patient_id or not total_amount or not date_issued or not status:
+                flash('Please fill all fields correctly.', 'error')
+                return redirect(url_for('billing'))
+
+            bill = Bill(
+                patient_id=int(patient_id),
+                total_amount=float(total_amount),
+                date_issued=date_issued,
+                status=status
+            )
+            db.session.add(bill)
+            db.session.commit()
+            flash('Bill added successfully.', 'success')
+            return redirect(url_for('billing'))
+        except Exception as e:
+            print("Billing error:", e)
+            flash('An error occurred while adding the bill.', 'error')
             return redirect(url_for('billing'))
 
-        db.session.add(Bill(
-            patient_id=patient.id,
-            total_amount=request.form.get('total_amount'),
-            date_issued=request.form.get('date_issued'),
-            status=request.form.get('status')
+    return render_template('billing.html', patients=patients_list, bills=bills)
+
+# =======================
+# APPOINTMENTS
+# =======================
+@app.route('/appointments', methods=['GET', 'POST'], endpoint='appointments')
+@login_required
+def appointments():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        db.session.add(Appointment(
+            patient_id=request.form['patient_id'],
+            date=request.form['date'],
+            time=request.form['time'],
+            reason=request.form['reason']
         ))
         db.session.commit()
-        flash("Bill added successfully.", "success")
-        return redirect(url_for('billing'))
+        flash('Appointment added successfully.', 'success')
+        return redirect(url_for('appointments'))
 
-    bills = Bill.query.order_by(Bill.id.desc()).all()
-    return render_template('billing.html', patients=patients_list, bills=bills)
+    return render_template('appointment.html', patients=patients_list, appointments=Appointment.query.all())
+
+# =======================
+# MEDICAL HISTORY
+# =======================
+@app.route('/medical_history', methods=['GET', 'POST'], endpoint='medical_history')
+@login_required
+def medical_history():
+    patients_list = Patient.query.all()
+    if request.method == 'POST':
+        db.session.add(MedicalHistory(
+            patient_id=request.form['patient_id'],
+            history=request.form['history']
+        ))
+        db.session.commit()
+        flash('Medical history added successfully.', 'success')
+        return redirect(url_for('medical_history'))
+
+    histories = MedicalHistory.query.order_by(MedicalHistory.id.desc()).all()
+    return render_template('medical_history.html', patients=patients_list, histories=histories)
 
 # =======================
 # CONTACTS
@@ -236,26 +282,12 @@ def contacts():
     return render_template('contacts.html', messages=Contact.query.all())
 
 # =======================
-# MEDICAL HISTORY
+# REPORTS
 # =======================
-@app.route('/medical_history', endpoint='medical_history')
+@app.route('/reports', endpoint='reports')
 @login_required
-def medical_history():
-    return render_template('medical_history.html', histories=MedicalHistory.query.all())
-
-@app.route('/add_medical_history', methods=['GET', 'POST'], endpoint='add_medical_history')
-@login_required
-def add_medical_history():
-    patients_list = Patient.query.all()
-    if request.method == 'POST':
-        db.session.add(MedicalHistory(
-            patient_id=request.form['patient_id'],
-            history=request.form['history']
-        ))
-        db.session.commit()
-        flash('Medical history added successfully.', 'success')
-        return redirect(url_for('medical_history'))
-    return render_template('add_medical_history.html', patients=patients_list)
+def reports():
+    return render_template('reports.html')
 
 # =======================
 # MAIN
