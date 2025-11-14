@@ -1,21 +1,40 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Add Medical History</h2>
-<form method="POST">
-    <div class="mb-3">
-        <label for="patient_id" class="form-label">Patient</label>
+<h3>Medical History</h3>
+
+<div class="row">
+  <div class="col-md-4">
+    <form method="POST" action="{{ url_for('medical_history') }}">
+      <div class="mb-2">
+        <label class="form-label">Patient</label>
         <select name="patient_id" class="form-select" required>
-            <option value="">Select Patient</option>
-            {% for patient in patients %}
-                <option value="{{ patient.id }}">{{ patient.full_name }}</option>
-            {% endfor %}
+          <option value="">Select patient</option>
+          {% for p in patients %}
+            <option value="{{ p.id }}">{{ p.full_name }}</option>
+          {% endfor %}
         </select>
-    </div>
-    <div class="mb-3">
-        <label for="history" class="form-label">History</label>
-        <textarea name="history" class="form-control" rows="4" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Add History</button>
-</form>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">History</label>
+        <textarea class="form-control" name="history" required></textarea>
+      </div>
+      <button class="btn btn-primary w-100">Save History</button>
+    </form>
+  </div>
+
+  <div class="col-md-8">
+    <table class="table table-striped">
+      <thead><tr><th>#</th><th>Patient</th><th>History</th></tr></thead>
+      <tbody>
+        {% for h in histories %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ h.patient.full_name if h.patient else 'Unknown' }}</td>
+          <td>{{ h.history }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}
