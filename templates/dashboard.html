@@ -1,31 +1,10 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
 {% block content %}
-<h2>Welcome, {{ username }}</h2>
-<div class="row mt-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Billing Records</h5>
-                <p class="card-text">{{ billing_count }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Appointments</h5>
-                <p class="card-text">{{ appointment_count }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Medical Histories</h5>
-                <p class="card-text">{{ history_count }}</p>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>Welcome, {{ username }}!</h1>
+<ul>
+    <li>Total Billing Records: {{ billing_count }}</li>
+    <li>Total Appointments: {{ appointment_count }}</li>
+    <li>Total Medical Histories: {{ history_count }}</li>
+</ul>
 {% endblock %}
