@@ -1,60 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>PDMS</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDMS - Patient Data Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+        }
+        .content {
+            padding-top: 30px;
+        }
+        .footer-text {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('dashboard') }}">PDMS</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="nav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if current_user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('patients') }}">Patients</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('medicines') }}">Medicines</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('appointments') }}">Appointments</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('billing') }}">Billing</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('medical_history') }}">Medical History</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('reports') }}">Reports</a></li>
-        {% endif %}
-      </ul>
 
-      <ul class="navbar-nav ms-auto">
-        {% if current_user.is_authenticated %}
-          <li class="nav-item"><span class="nav-link disabled">Hello, {{ current_user.username }}</span></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('reset_password') }}">Reset Password</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
-        {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('forgot_password') }}">Forgot Password</a></li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">PDMS</a>
 
-<div class="container my-4">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for cat, msg in messages %}
-        <div class="alert alert-{{ cat }} alert-dismissible fade show" role="alert">
-          {{ msg }} <button class="btn-close" data-bs-dismiss="alert"></button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
+
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            {% if current_user.is_authenticated %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('billing') }}">Billing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('appointments') }}">Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('medical_history') }}">Medical History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reports') }}">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('reset_password') }}">Reset Password</a></li>
+
+                    <!-- Logged-in username -->
+                    <li class="nav-item">
+                        <span class="nav-link text-light">Hi, {{ current_user.username }}</span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
         </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+    </nav>
 
-  {% block content %}{% endblock %}
-</div>
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Page Content -->
+    <div class="container content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="footer-text">
+        © {{ 2025 }} PDMS - All Rights Reserved.
+    </div>
+
+    <!-- Bootstrap Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
