@@ -94,20 +94,15 @@ def register():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-
-        if password != confirm_password:
-            flash("Passwords do not match", "danger")
-            return redirect(url_for('register'))
 
         if User.query.filter_by(username=username).first():
-            flash("Username already exists", "danger")
+            flash('Username already exists!', 'danger')
             return redirect(url_for('register'))
 
         new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
         db.session.add(new_user)
         db.session.commit()
-        flash("User registered successfully! Please login.", "success")
+        flash('User registered successfully!', 'success')
         return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -120,36 +115,40 @@ def forgot_password():
     if request.method == 'POST':
         username = request.form.get('username')
         user = User.query.filter_by(username=username).first()
-        if not user:
-            flash("Username not found", "danger")
+
+        if user:
+            # Generate temporary password
+            temp_password = "Temp1234"  # You can make this dynamic if needed
+            user.password = generate_password_hash(temp_password, method='sha256')
+            db.session.commit()
+            flash(f'Password reset! Your temporary password is {temp_password}', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('User not found!', 'danger')
             return redirect(url_for('forgot_password'))
-        return redirect(url_for('set_new_password', username=username))
+
     return render_template('forgot_password.html')
 
 # ---------------------------
-# Set New Password
+# Reset Password (Logged-in Users)
 # ---------------------------
-@app.route('/set_new_password/<username>', methods=['GET', 'POST'])
-def set_new_password(username):
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        flash("User not found", "danger")
-        return redirect(url_for('forgot_password'))
-
+@app.route('/reset_password', methods=['GET', 'POST'])
+@login_required
+def reset_password():
     if request.method == 'POST':
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
         if new_password != confirm_password:
-            flash("Passwords do not match", "danger")
-            return redirect(url_for('set_new_password', username=username))
+            flash('Passwords do not match!', 'danger')
+            return redirect(url_for('reset_password'))
 
-        user.password = generate_password_hash(new_password, method='sha256')
+        current_user.password = generate_password_hash(new_password, method='sha256')
         db.session.commit()
-        flash("Password updated successfully! Please login.", "success")
-        return redirect(url_for('login'))
+        flash('Password updated successfully!', 'success')
+        return redirect(url_for('dashboard'))
 
-    return render_template('set_new_password.html', username=username)
+    return render_template('reset_password.html')
 
 # ---------------------------
 # Dashboard
@@ -160,11 +159,13 @@ def dashboard():
     billing_count = Billing.query.count()
     appointment_count = Appointment.query.count()
     history_count = MedicalHistory.query.count()
-    return render_template('dashboard.html',
-                           billing_count=billing_count,
-                           appointment_count=appointment_count,
-                           history_count=history_count,
-                           username=current_user.username)
+    return render_template(
+        'dashboard.html',
+        billing_count=billing_count,
+        appointment_count=appointment_count,
+        history_count=history_count,
+        username=current_user.username
+    )
 
 # ---------------------------
 # Billing
@@ -207,6 +208,14 @@ def appointments():
 def medical_history():
     histories = MedicalHistory.query.all()
     return render_template('medical_history.html', histories=histories)
+
+# ---------------------------
+# Reports
+# ---------------------------
+@app.route('/reports')
+@login_required
+def reports():
+    return render_template('reports.html')
 
 # ---------------------------
 # Create Database + Default Admin
