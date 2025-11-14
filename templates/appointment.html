@@ -1,34 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Appointments</h3>
-<div class="row">
-  <div class="col-md-4">
-    <form method="POST" action="{{ url_for('appointments') }}">
-      <div class="mb-2">
-        <label class="form-label">Patient</label>
-        <select name="patient_id" class="form-select" required>
-          <option value="">Select</option>
-          {% for p in patients %}
-            <option value="{{ p.id }}">{{ p.full_name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="mb-2"><label class="form-label">Date</label><input name="date" type="date" class="form-control" required></div>
-      <div class="mb-2"><label class="form-label">Time</label><input name="time" class="form-control" required></div>
-      <div class="mb-2"><label class="form-label">Reason</label><input name="reason" class="form-control"></div>
-      <button class="btn btn-primary w-100">Add Appointment</button>
-    </form>
-  </div>
 
-  <div class="col-md-8">
-    <table class="table table-striped">
-      <thead><tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr></thead>
-      <tbody>
-        {% for a in appointments %}
-        <tr><td>{{ loop.index }}</td><td>{{ a.patient.full_name if a.patient else 'Unknown' }}</td><td>{{ a.date }}</td><td>{{ a.time }}</td><td>{{ a.reason }}</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+<h2 class="mb-4">Appointments</h2>
+
+<p>This section will allow you to manage patient appointments.</p>
+
 {% endblock %}
