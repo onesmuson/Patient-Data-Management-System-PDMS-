@@ -1,33 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}PDMS{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>PDMS</title>
 </head>
 <body>
     <nav>
         <a href="{{ url_for('dashboard') }}">Dashboard</a> |
+        <a href="{{ url_for('patients') }}">Patients</a> |
         <a href="{{ url_for('billing') }}">Billing</a> |
         <a href="{{ url_for('appointments') }}">Appointments</a> |
         <a href="{{ url_for('medical_history') }}">Medical History</a> |
         <a href="{{ url_for('reports') }}">Reports</a> |
-        <a href="{{ url_for('patients') }}">Patients</a> |
         <a href="{{ url_for('reset_password') }}">Reset Password</a> |
         <a href="{{ url_for('logout') }}">Logout</a>
     </nav>
     <hr>
-    <div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <p style="color: {% if category=='danger' %}red{% else %}green{% endif %};">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-    <div>
-        {% block content %}{% endblock %}
-    </div>
+    {% block content %}{% endblock %}
 </body>
 </html>
