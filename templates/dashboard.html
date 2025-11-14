@@ -1,10 +1,6 @@
-{% extends 'base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% extends "base.html" %}
+
 {% block content %}
-<h1>Welcome, {{ username }}!</h1>
-<ul>
-    <li>Total Billing Records: {{ billing_count }}</li>
-    <li>Total Appointments: {{ appointment_count }}</li>
-    <li>Total Medical Histories: {{ history_count }}</li>
-</ul>
+<h1>Dashboard</h1>
+<p>Welcome to the Patient Data Management System!</p>
 {% endblock %}
