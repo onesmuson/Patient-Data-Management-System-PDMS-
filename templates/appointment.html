@@ -1,8 +1,25 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-<h2 class="mb-4">Appointments</h2>
-
-<p>This section will allow you to manage patient appointments.</p>
-
+<h2>Appointments</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient Name</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.id }}</td>
+            <td>{{ appointment.patient_name }}</td>
+            <td>{{ appointment.date }}</td>
+            <td>{{ appointment.time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
