@@ -1,28 +1,10 @@
-{% extends 'base.html' %}
-{% block title %}Billing{% endblock %}
+{% extends "base.html" %}
+
 {% block content %}
-<h2>Billing Records</h2>
-<form method="POST">
-    <input type="text" name="patient_name" placeholder="Patient Name" required>
-    <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-    <input type="text" name="description" placeholder="Description">
-    <button type="submit">Add Billing</button>
-</form>
-<hr>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Patient</th>
-        <th>Amount</th>
-        <th>Description</th>
-    </tr>
+<h1>Billing</h1>
+<ul>
     {% for bill in bills %}
-    <tr>
-        <td>{{ bill.id }}</td>
-        <td>{{ bill.patient_name }}</td>
-        <td>{{ bill.amount }}</td>
-        <td>{{ bill.description }}</td>
-    </tr>
+        <li>{{ bill.name }} - ${{ bill.amount }}</li>
     {% endfor %}
-</table>
+</ul>
 {% endblock %}
