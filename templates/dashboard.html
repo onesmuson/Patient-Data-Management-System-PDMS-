@@ -1,73 +1,66 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Welcome, {{ current_user.username }}!</h2>
-<p class="text-muted">This is your patient management dashboard.</p>
+<div class="d-flex justify-content-between align-items-center">
+  <div>
+    <h2>Welcome, {{ current_user.username }} 👋</h2>
+    <p class="text-muted">Welcome to your Patient Data Management System dashboard.</p>
+  </div>
+  <div>
+    <small class="text-muted">Quick links</small>
+    <div>
+      <a href="{{ url_for('patients') }}" class="btn btn-outline-primary btn-sm">Patients</a>
+      <a href="{{ url_for('medicines') }}" class="btn btn-outline-success btn-sm">Medicines</a>
+      <a href="{{ url_for('billing') }}" class="btn btn-outline-warning btn-sm">Billing</a>
+    </div>
+  </div>
+</div>
 
 <div class="row mt-4">
   <div class="col-md-3">
-    <div class="card text-center bg-primary text-white mb-3">
+    <div class="card text-white bg-primary mb-3">
       <div class="card-body">
-        <h5>Total Patients</h5>
-        <p>{{ total_patients }}</p>
-        <a href="{{ url_for('patients') }}" class="text-white">View Patients</a>
+        <h5 class="card-title">Patients</h5>
+        <p class="card-text fs-4">{{ total_patients }}</p>
       </div>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="card text-center bg-success text-white mb-3">
+    <div class="card text-white bg-success mb-3">
       <div class="card-body">
-        <h5>Total Medicines</h5>
-        <p>{{ total_medicines }}</p>
-        <a href="{{ url_for('medicines') }}" class="text-white">View Medicines</a>
+        <h5 class="card-title">Medicines</h5>
+        <p class="card-text fs-4">{{ total_medicines }}</p>
       </div>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="card text-center bg-warning text-dark mb-3">
+    <div class="card text-dark bg-warning mb-3">
       <div class="card-body">
-        <h5>Total Appointments</h5>
-        <p>{{ total_appointments }}</p>
-        <a href="{{ url_for('appointments') }}" class="text-dark">View Appointments</a>
+        <h5 class="card-title">Appointments</h5>
+        <p class="card-text fs-4">{{ total_appointments }}</p>
       </div>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="card text-center bg-danger text-white mb-3">
+    <div class="card text-white bg-danger mb-3">
       <div class="card-body">
-        <h5>Total Bills</h5>
-        <p>{{ total_bills }}</p>
-        <a href="{{ url_for('billing') }}" class="text-white">View Bills</a>
+        <h5 class="card-title">Bills</h5>
+        <p class="card-text fs-4">{{ total_bills }}</p>
       </div>
     </div>
   </div>
 </div>
 
-<h4 class="mt-4">Recent Patients</h4>
+<h5 class="mt-4">Recent Patients</h5>
 <ul class="list-group">
-  {% for patient in recent_patients %}
-    <li class="list-group-item">{{ patient.full_name }} - {{ patient.contact }}</li>
+  {% for p in patients %}
+    <li class="list-group-item">{{ p.full_name }} — {{ p.contact or '-' }}</li>
   {% endfor %}
 </ul>
 
-<h4 class="mt-4">Recent Appointments</h4>
+<h5 class="mt-4">Recent Appointments</h5>
 <ul class="list-group">
-  {% for appointment in recent_appointments %}
-    <li class="list-group-item">{{ appointment.patient.full_name }} - {{ appointment.date }} {{ appointment.time }}</li>
-  {% endfor %}
-</ul>
-
-<h4 class="mt-4">Recent Bills</h4>
-<ul class="list-group">
-  {% for bill in recent_bills %}
-    <li class="list-group-item">{{ bill.patient.full_name if bill.patient else 'Unknown' }} - {{ bill.total_amount }} - {{ bill.status }}</li>
-  {% endfor %}
-</ul>
-
-<h4 class="mt-4">Recent Reports</h4>
-<ul class="list-group">
-  {% for report in recent_reports %}
-    <li class="list-group-item">{{ report.patient.full_name if report.patient else 'Unknown' }} - {{ report.type }} - {{ report.date }}</li>
+  {% for a in appointments %}
+    <li class="list-group-item">{{ a.patient.full_name if a.patient else 'Unknown' }} — {{ a.date }} {{ a.time }}</li>
   {% endfor %}
 </ul>
 {% endblock %}
