@@ -1,39 +1,40 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Medical History</h2>
+<h3>Medical History</h3>
 
-<div class="card shadow-sm mb-4">
-  <div class="card-header bg-primary text-white">
-    <h5>Patient Medical History</h5>
+<div class="row">
+  <div class="col-md-4">
+    <form method="POST" action="{{ url_for('medical_history') }}">
+      <div class="mb-2">
+        <label class="form-label">Patient</label>
+        <select name="patient_id" class="form-select" required>
+          <option value="">Select patient</option>
+          {% for p in patients %}
+            <option value="{{ p.id }}">{{ p.full_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">History</label>
+        <textarea class="form-control" name="history" required></textarea>
+      </div>
+      <button class="btn btn-primary w-100">Save History</button>
+    </form>
   </div>
-  <div class="card-body table-responsive">
-    {% if histories %}
-    <table class="table table-striped align-middle">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Patient</th>
-          <th>Condition</th>
-          <th>Prescribed Drugs</th>
-          <th>Date</th>
-        </tr>
-      </thead>
+
+  <div class="col-md-8">
+    <table class="table table-striped">
+      <thead><tr><th>#</th><th>Patient</th><th>History</th></tr></thead>
       <tbody>
-        {% for history in histories %}
+        {% for h in histories %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ history.patient.full_name if history.patient else 'Unknown' }}</td>
-          <td>{{ history.condition }}</td>
-          <td>{{ history.prescribed_drug }}</td>
-          <td>{{ history.date }}</td>
+          <td>{{ h.patient.full_name if h.patient else 'Unknown' }}</td>
+          <td>{{ h.history }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    {% else %}
-      <p class="text-muted">No medical history records found.</p>
-    {% endif %}
   </div>
 </div>
 {% endblock %}
