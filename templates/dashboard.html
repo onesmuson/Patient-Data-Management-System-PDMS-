@@ -1,66 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center">
-  <div>
-    <h2>Welcome, {{ current_user.username }} 👋</h2>
-    <p class="text-muted">Welcome to your Patient Data Management System dashboard.</p>
-  </div>
-  <div>
-    <small class="text-muted">Quick links</small>
-    <div>
-      <a href="{{ url_for('patients') }}" class="btn btn-outline-primary btn-sm">Patients</a>
-      <a href="{{ url_for('medicines') }}" class="btn btn-outline-success btn-sm">Medicines</a>
-      <a href="{{ url_for('billing') }}" class="btn btn-outline-warning btn-sm">Billing</a>
+
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <a href="{{ url_for('billing') }}" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4">
+                <h4>Billing</h4>
+            </div>
+        </a>
     </div>
-  </div>
+
+    <div class="col-md-3">
+        <a href="{{ url_for('appointments') }}" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4">
+                <h4>Appointments</h4>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{{ url_for('medical_history') }}" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4">
+                <h4>Medical History</h4>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{{ url_for('reports') }}" class="text-decoration-none">
+            <div class="card shadow-sm text-center p-4">
+                <h4>Reports</h4>
+            </div>
+        </a>
+    </div>
+
 </div>
 
-<div class="row mt-4">
-  <div class="col-md-3">
-    <div class="card text-white bg-primary mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Patients</h5>
-        <p class="card-text fs-4">{{ total_patients }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-white bg-success mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Medicines</h5>
-        <p class="card-text fs-4">{{ total_medicines }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-dark bg-warning mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Appointments</h5>
-        <p class="card-text fs-4">{{ total_appointments }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card text-white bg-danger mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Bills</h5>
-        <p class="card-text fs-4">{{ total_bills }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<h5 class="mt-4">Recent Patients</h5>
-<ul class="list-group">
-  {% for p in patients %}
-    <li class="list-group-item">{{ p.full_name }} — {{ p.contact or '-' }}</li>
-  {% endfor %}
-</ul>
-
-<h5 class="mt-4">Recent Appointments</h5>
-<ul class="list-group">
-  {% for a in appointments %}
-    <li class="list-group-item">{{ a.patient.full_name if a.patient else 'Unknown' }} — {{ a.date }} {{ a.time }}</li>
-  {% endfor %}
-</ul>
 {% endblock %}
