@@ -52,13 +52,11 @@ def load_user(user_id):
 # ---------------------------
 # Routes
 # ---------------------------
-
 @app.route('/')
 def index():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
-
 
 # ---------------------------
 # Login
@@ -68,7 +66,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
         user = User.query.filter_by(username=username).first()
 
         if user and check_password_hash(user.password, password):
@@ -80,7 +77,6 @@ def login():
 
     return render_template('login.html')
 
-
 # ---------------------------
 # Logout
 # ---------------------------
@@ -90,6 +86,70 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# ---------------------------
+# Register New User
+# ---------------------------
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if password != confirm_password:
+            flash("Passwords do not match", "danger")
+            return redirect(url_for('register'))
+
+        if User.query.filter_by(username=username).first():
+            flash("Username already exists", "danger")
+            return redirect(url_for('register'))
+
+        new_user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        db.session.add(new_user)
+        db.session.commit()
+        flash("User registered successfully! Please login.", "success")
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+# ---------------------------
+# Forgot Password
+# ---------------------------
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            flash("Username not found", "danger")
+            return redirect(url_for('forgot_password'))
+        return redirect(url_for('set_new_password', username=username))
+    return render_template('forgot_password.html')
+
+# ---------------------------
+# Set New Password
+# ---------------------------
+@app.route('/set_new_password/<username>', methods=['GET', 'POST'])
+def set_new_password(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash("User not found", "danger")
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password != confirm_password:
+            flash("Passwords do not match", "danger")
+            return redirect(url_for('set_new_password', username=username))
+
+        user.password = generate_password_hash(new_password, method='sha256')
+        db.session.commit()
+        flash("Password updated successfully! Please login.", "success")
+        return redirect(url_for('login'))
+
+    return render_template('set_new_password.html', username=username)
 
 # ---------------------------
 # Dashboard
@@ -100,70 +160,35 @@ def dashboard():
     billing_count = Billing.query.count()
     appointment_count = Appointment.query.count()
     history_count = MedicalHistory.query.count()
-    return render_template(
-        'dashboard.html',
-        billing_count=billing_count,
-        appointment_count=appointment_count,
-        history_count=history_count,
-        username=current_user.username
-    )
-
+    return render_template('dashboard.html',
+                           billing_count=billing_count,
+                           appointment_count=appointment_count,
+                           history_count=history_count,
+                           username=current_user.username)
 
 # ---------------------------
-# Billing Route
+# Billing
 # ---------------------------
 @app.route('/billing', methods=['GET', 'POST'])
 @login_required
 def billing():
-    try:
-        if request.method == 'POST':
-            patient_name = request.form.get('patient_name')
-            amount = request.form.get('amount')
-            description = request.form.get('description')
+    if request.method == 'POST':
+        patient_name = request.form.get('patient_name')
+        amount = request.form.get('amount')
+        description = request.form.get('description')
 
-            if not amount:
-                flash("Amount is required.", "danger")
-                return redirect(url_for('billing'))
-
-            new_bill = Billing(
-                patient_name=patient_name,
-                amount=float(amount),
-                description=description
-            )
-            db.session.add(new_bill)
-            db.session.commit()
-            flash('Billing added successfully!', 'success')
+        if not amount:
+            flash("Amount is required.", "danger")
             return redirect(url_for('billing'))
 
-        bills = Billing.query.all()
-        return render_template('billing.html', bills=bills)
-
-    except Exception as e:
-        return f"Billing Error: {e}", 500
-
-
-# ---------------------------
-# Reset Password (No Email)
-# ---------------------------
-@app.route('/reset_password', methods=['GET', 'POST'])
-@login_required
-def reset_password():
-    if request.method == 'POST':
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_password')
-
-        if new_password != confirm_password:
-            flash('Passwords do not match!', 'danger')
-            return redirect(url_for('reset_password'))
-
-        current_user.password = generate_password_hash(new_password, method='sha256')
+        new_bill = Billing(patient_name=patient_name, amount=float(amount), description=description)
+        db.session.add(new_bill)
         db.session.commit()
+        flash('Billing added successfully!', 'success')
+        return redirect(url_for('billing'))
 
-        flash('Password updated successfully!', 'success')
-        return redirect(url_for('dashboard'))
-
-    return render_template('reset_password.html')
-
+    bills = Billing.query.all()
+    return render_template('billing.html', bills=bills)
 
 # ---------------------------
 # Appointments
@@ -174,7 +199,6 @@ def appointments():
     appointments = Appointment.query.all()
     return render_template('appointments.html', appointments=appointments)
 
-
 # ---------------------------
 # Medical History
 # ---------------------------
@@ -184,30 +208,15 @@ def medical_history():
     histories = MedicalHistory.query.all()
     return render_template('medical_history.html', histories=histories)
 
-
-# ---------------------------
-# Reports
-# ---------------------------
-@app.route('/reports')
-@login_required
-def reports():
-    return render_template('reports.html')
-
-
 # ---------------------------
 # Create Database + Default Admin
 # ---------------------------
 with app.app_context():
     db.create_all()
-
     if not User.query.filter_by(username="admin").first():
-        admin = User(
-            username="admin",
-            password=generate_password_hash("admin123", method="sha256")
-        )
+        admin = User(username="admin", password=generate_password_hash("admin123", method="sha256"))
         db.session.add(admin)
         db.session.commit()
-
 
 # ---------------------------
 # Run App
