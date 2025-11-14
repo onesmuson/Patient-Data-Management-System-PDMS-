@@ -1,13 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Add Medicine{% endblock %}
-
 {% block content %}
-<h1>Add Medicine</h1>
-<form method="POST">
-    <input type="text" name="name" placeholder="Medicine Name">
-    <input type="text" name="description" placeholder="Description">
-    <input type="text" name="dosage" placeholder="Dosage">
-    <input type="number" name="quantity" placeholder="Quantity">
-    <button type="submit">Add Medicine</button>
+<h3>Add Medicine</h3>
+<form method="POST" action="{{ url_for('add_medicine') }}">
+  <div class="mb-2"><label class="form-label">Name</label><input name="name" class="form-control" required></div>
+  <div class="mb-2"><label class="form-label">Dosage</label><input name="dosage" class="form-control"></div>
+  <div class="mb-2"><label class="form-label">Quantity</label><input name="quantity" type="number" class="form-control"></div>
+  <div class="mb-2"><label class="form-label">Description</label><textarea name="description" class="form-control"></textarea></div>
+  <button class="btn btn-success">Save</button>
 </form>
 {% endblock %}
