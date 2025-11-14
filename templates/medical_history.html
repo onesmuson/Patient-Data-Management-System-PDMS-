@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Medical Histories</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Patient Name</th>
-            <th>History</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for history in histories %}
-        <tr>
-            <td>{{ history.id }}</td>
-            <td>{{ history.patient_name }}</td>
-            <td>{{ history.history }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<h1>Medical History</h1>
+<p>Patient medical history will be shown here.</p>
 {% endblock %}
