@@ -1,42 +1,31 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-<h2 class="mb-4">Dashboard</h2>
-
-<div class="row">
-
-    <div class="col-md-3">
-        <a href="{{ url_for('billing') }}" class="text-decoration-none">
-            <div class="card shadow-sm text-center p-4">
-                <h4>Billing</h4>
+<h2>Welcome, {{ username }}</h2>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Billing Records</h5>
+                <p class="card-text">{{ billing_count }}</p>
             </div>
-        </a>
+        </div>
     </div>
-
-    <div class="col-md-3">
-        <a href="{{ url_for('appointments') }}" class="text-decoration-none">
-            <div class="card shadow-sm text-center p-4">
-                <h4>Appointments</h4>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Appointments</h5>
+                <p class="card-text">{{ appointment_count }}</p>
             </div>
-        </a>
+        </div>
     </div>
-
-    <div class="col-md-3">
-        <a href="{{ url_for('medical_history') }}" class="text-decoration-none">
-            <div class="card shadow-sm text-center p-4">
-                <h4>Medical History</h4>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Medical Histories</h5>
+                <p class="card-text">{{ history_count }}</p>
             </div>
-        </a>
+        </div>
     </div>
-
-    <div class="col-md-3">
-        <a href="{{ url_for('reports') }}" class="text-decoration-none">
-            <div class="card shadow-sm text-center p-4">
-                <h4>Reports</h4>
-            </div>
-        </a>
-    </div>
-
 </div>
-
 {% endblock %}
