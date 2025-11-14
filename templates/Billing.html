@@ -1,47 +1,46 @@
-{% extends "base.html" %}
-{% block content %}
-<h3>Billing</h3>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing</title>
+</head>
+<body>
 
-<div class="row">
-  <div class="col-md-4">
-    <form method="POST" action="{{ url_for('billing') }}">
-      <div class="mb-2">
-        <label class="form-label">Patient</label>
-        <select name="patient_id" class="form-select" required>
-          <option value="">Select patient</option>
-          {% for p in patients %}
-            <option value="{{ p.id }}">{{ p.full_name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="mb-2"><label class="form-label">Total amount</label><input name="total_amount" type="number" step="0.01" class="form-control" required></div>
-      <div class="mb-2"><label class="form-label">Date issued</label><input name="date_issued" type="date" class="form-control" required></div>
-      <div class="mb-2">
-        <label class="form-label">Status</label>
-        <select name="status" class="form-select" required>
-          <option>Pending</option>
-          <option>Paid</option>
-        </select>
-      </div>
-      <button class="btn btn-success w-100">Add Bill</button>
-    </form>
-  </div>
+<h2>Billing Section</h2>
 
-  <div class="col-md-8">
-    <table class="table table-striped">
-      <thead><tr><th>#</th><th>Patient</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-      <tbody>
-        {% for b in bills %}
-        <tr>
-          <td>{{ loop.index }}</td>
-          <td>{{ b.patient.full_name if b.patient else 'Unknown' }}</td>
-          <td>{{ b.total_amount }}</td>
-          <td>{{ b.date_issued }}</td>
-          <td>{{ b.status }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-{% endblock %}
+<form method="POST">
+    <label>Patient Name:</label><br>
+    <input type="text" name="patient_name" required><br><br>
+
+    <label>Amount:</label><br>
+    <input type="number" name="amount" step="0.01" required><br><br>
+
+    <label>Description:</label><br>
+    <textarea name="description"></textarea><br><br>
+
+    <button type="submit">Add Billing</button>
+</form>
+
+<hr>
+
+<h3>Billing Records</h3>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Patient Name</th>
+        <th>Amount</th>
+        <th>Description</th>
+    </tr>
+
+    {% for bill in bills %}
+    <tr>
+        <td>{{ bill.id }}</td>
+        <td>{{ bill.patient_name }}</td>
+        <td>{{ bill.amount }}</td>
+        <td>{{ bill.description }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
