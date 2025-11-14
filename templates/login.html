@@ -1,29 +1,30 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white">
-        <h5>Login</h5>
-      </div>
-      <div class="card-body">
-        <form method="POST" action="{{ url_for('login') }}">
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" name="username" id="username" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" id="password" class="form-control" required>
-          </div>
-          <button type="submit" class="btn btn-success w-100">Login</button>
-        </form>
-        <p class="mt-2 text-center">
-          <a href="{{ url_for('reset_password') }}">Forgot Password?</a>
+<div class="container mt-5" style="max-width: 450px;">
+    <h3 class="text-center mb-4">Login</h3>
+
+    <form action="/login" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" name="username" required class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" name="password" required class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <p>Don't have an account?  
+            <a href="{{ url_for('register') }}">Register</a>
         </p>
-      </div>
     </div>
-  </div>
+
+    <div class="text-center mt-2">
+        <a href="{{ url_for('reset_password') }}">Forgot Password?</a>
+    </div>
 </div>
 {% endblock %}
