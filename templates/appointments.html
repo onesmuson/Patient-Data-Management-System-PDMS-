@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Appointments</h2>
+  <form method="POST" action="{{ url_for('appointments') }}">
+    <label>Patient</label>
+    <select class="form-control" name="patient_id" required>
+      <option value="">Select patient</option>
+      {% for p in patients %}
+        <option value="{{ p.id }}">{{ p.full_name }}</option>
+      {% endfor %}
+    </select>
+    <label>Date</label><input class="form-control" name="date" type="date">
+    <label>Time</label><input class="form-control" name="time" type="time">
+    <label>Reason</label><input class="form-control" name="reason" type="text">
+    <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Add Appointment</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>All Appointments</h3>
+  {% if appointments %}
+    <table class="table">
+      <thead><tr><th>#</th><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr></thead>
+      <tbody>
+        {% for a in appointments %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ a.patient.full_name if a.patient else 'Unknown' }}</td>
+            <td>{{ a.date }}</td>
+            <td>{{ a.time }}</td>
+            <td>{{ a.reason }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No appointments yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
