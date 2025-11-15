@@ -1,6 +1,61 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Patients</h1>
-<p>List of all patients will appear here.</p>
+<h2>Patients Management</h2>
+
+<div style="display:flex; gap:18px; flex-wrap:wrap;">
+  <div style="flex:1; min-width:320px;">
+    <div class="card">
+      <h3>Add Patient</h3>
+      <form method="POST" action="{{ url_for('patients') }}">
+        <label>Full name</label>
+        <input class="form-control" name="full_name" type="text" required>
+        <label>Age</label>
+        <input class="form-control" name="age" type="number" min="0">
+        <label>Gender</label>
+        <select class="form-control" name="gender">
+          <option value="">--Select--</option>
+          <option>Male</option><option>Female</option><option>Other</option>
+        </select>
+        <label>Contact</label>
+        <input class="form-control" name="contact" type="text">
+        <label>Address</label>
+        <textarea class="form-control" name="address"></textarea>
+        <label>Condition</label>
+        <textarea class="form-control" name="condition"></textarea>
+        <label>Prescribed Drug</label>
+        <input class="form-control" name="prescribed_drug" type="text">
+        <div style="margin-top:12px;">
+          <button class="btn btn-primary" type="submit">Add Patient</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div style="flex:2; min-width:480px;">
+    <div class="card">
+      <h3>Patient List</h3>
+      {% if patients %}
+        <table class="table">
+          <thead>
+            <tr><th>#</th><th>Full name</th><th>Age</th><th>Gender</th><th>Contact</th><th>Prescribed</th></tr>
+          </thead>
+          <tbody>
+            {% for p in patients %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ url_for('patient_details', patient_id=p.id) }}">{{ p.full_name }}</a></td>
+                <td>{{ p.age or '-' }}</td>
+                <td>{{ p.gender or '-' }}</td>
+                <td>{{ p.contact or '-' }}</td>
+                <td>{{ p.prescribed_drug or '-' }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No patients yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock %}
