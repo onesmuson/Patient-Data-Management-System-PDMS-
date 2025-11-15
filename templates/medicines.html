@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Medicines</h2>
+  <form method="POST" action="{{ url_for('medicines') }}">
+    <label>Name</label><input class="form-control" name="name" type="text" required>
+    <label>Description</label><textarea class="form-control" name="description"></textarea>
+    <label>Dosage</label><input class="form-control" name="dosage" type="text">
+    <label>Quantity</label><input class="form-control" name="quantity" type="number" min="0">
+    <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Add Medicine</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>List</h3>
+  {% if medicines %}
+    <table class="table">
+      <thead><tr><th>#</th><th>Name</th><th>Dosage</th><th>Qty</th></tr></thead>
+      <tbody>
+        {% for m in medicines %}
+          <tr><td>{{ loop.index }}</td><td>{{ m.name }}</td><td>{{ m.dosage }}</td><td>{{ m.quantity or 0 }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No medicines yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
