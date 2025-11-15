@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Billing</h2>
+
+  <form method="POST" action="{{ url_for('billing') }}">
+    <label>Patient</label>
+    <select class="form-control" name="patient_id" required>
+      <option value="">Select patient</option>
+      {% for p in patients %}
+        <option value="{{ p.id }}">{{ p.full_name }}</option>
+      {% endfor %}
+    </select>
+
+    <label>Total Amount</label>
+    <input class="form-control" name="total_amount" type="number" step="0.01" required>
+
+    <label>Date issued</label>
+    <input class="form-control" name="date_issued" type="date">
+
+    <label>Status</label>
+    <select class="form-control" name="status">
+      <option>Pending</option>
+      <option>Paid</option>
+    </select>
+
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary" type="submit">Add Bill</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>All Bills</h3>
+  {% if bills %}
+    <table class="table">
+      <thead><tr><th>#</th><th>Patient</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for b in bills %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.patient.full_name if b.patient else 'Unknown' }}</td>
+            <td>{{ b.total_amount }}</td>
+            <td>{{ b.date_issued }}</td>
+            <td>{{ b.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No bills yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
