@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>{{ patient.full_name }}</h2>
+  <p><strong>Age:</strong> {{ patient.age or '-' }} — <strong>Gender:</strong> {{ patient.gender or '-' }}</p>
+  <p><strong>Contact:</strong> {{ patient.contact or '-' }}</p>
+  <p><strong>Address:</strong> {{ patient.address or '-' }}</p>
+  <p><strong>Condition:</strong> {{ patient.condition or '-' }}</p>
+  <p><strong>Prescribed drug:</strong> {{ patient.prescribed_drug or '-' }}</p>
+
+  <hr>
+  <h3>Medical history</h3>
+  {% if patient.histories %}
+    <ul>
+      {% for h in patient.histories %}
+        <li>{{ h.created_at.strftime('%Y-%m-%d') }} — {{ h.history }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No medical history recorded.</p>
+  {% endif %}
+</div>
+{% endblock %}
