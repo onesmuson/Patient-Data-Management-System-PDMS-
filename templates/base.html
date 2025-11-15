@@ -1,20 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title>PDMS</title>
+  <meta charset="utf-8" />
+  <title>PDMS - Patient Data Management System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('dashboard') }}">Dashboard</a> |
-        <a href="{{ url_for('patients') }}">Patients</a> |
-        <a href="{{ url_for('billing') }}">Billing</a> |
-        <a href="{{ url_for('appointments') }}">Appointments</a> |
-        <a href="{{ url_for('medical_history') }}">Medical History</a> |
-        <a href="{{ url_for('reports') }}">Reports</a> |
-        <a href="{{ url_for('reset_password') }}">Reset Password</a> |
+  <div class="navbar">
+    <div class="brand">PDMS</div>
+    <div class="links">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('patients') }}">Patients</a>
+        <a href="{{ url_for('medicines') }}">Medicines</a>
+        <a href="{{ url_for('appointments') }}">Appointments</a>
+        <a href="{{ url_for('medical_history') }}">Medical History</a>
+        <a href="{{ url_for('billing') }}">Billing</a>
+        <a href="{{ url_for('reports') }}">Reports</a>
+        <a href="{{ url_for('contacts') }}">Contacts</a>
+        <a href="{{ url_for('reset_password') }}">Reset Password</a>
         <a href="{{ url_for('logout') }}">Logout</a>
-    </nav>
-    <hr>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('forgot_password') }}">Forgot Password</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert {% if cat=='success' %}success{% elif cat=='danger' %}danger{% else %}info{% endif %}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     {% block content %}{% endblock %}
+  </div>
 </body>
 </html>
