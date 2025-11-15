@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-  <h2>Contacts / Messages</h2>
-  <form method="POST" action="{{ url_for('contacts') }}">
-    <label>Name</label><input class="form-control" name="name" type="text">
-    <label>Email</label><input class="form-control" name="email" type="email">
-    <label>Message</label><textarea class="form-control" name="message"></textarea>
-    <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Send</button></div>
-  </form>
-</div>
+<h2>Contacts</h2>
+<div class="row">
+  <div class="col-md-5">
+    <div class="card p-3 card-custom">
+      <h5>Send Message</h5>
+      <form method="POST" action="{{ url_for('contacts') }}">
+        <div class="mb-2"><label class="form-label">Name</label><input name="name" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Email</label><input name="email" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Message</label><textarea name="message" class="form-control"></textarea></div>
+        <div class="d-grid"><button class="btn btn-accent">Send</button></div>
+      </form>
+    </div>
+  </div>
 
-<div class="card">
-  <h3>Messages</h3>
-  {% if messages %}
-    <table class="table">
-      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Message</th></tr></thead>
-      <tbody>
+  <div class="col-md-7">
+    <div class="card p-3 card-custom">
+      <h5>Messages</h5>
+      <ul class="list-group mt-2">
         {% for m in messages %}
-          <tr><td>{{ loop.index }}</td><td>{{ m.name }}</td><td>{{ m.email }}</td><td>{{ m.message }}</td></tr>
+          <li class="list-group-item"><strong>{{ m.name }}</strong> <div class="small text-muted">{{ m.email }}</div><div class="mt-2">{{ m.message }}</div></li>
+        {% else %}
+          <li class="list-group-item text-muted">No messages</li>
         {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>No messages yet.</p>
-  {% endif %}
+      </ul>
+    </div>
+  </div>
 </div>
 {% endblock %}
