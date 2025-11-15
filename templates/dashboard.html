@@ -1,6 +1,60 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Dashboard</h1>
-<p>Welcome to the Patient Data Management System!</p>
+<div class="card">
+  <h1>Dashboard</h1>
+  <p>{{ welcome }}</p>
+</div>
+
+<div class="grid">
+  <div class="card small">
+    <h3>Total Patients</h3>
+    <p>{{ stats.total_patients }}</p>
+  </div>
+  <div class="card small">
+    <h3>Total Medicines</h3>
+    <p>{{ stats.total_medicines }}</p>
+  </div>
+  <div class="card small">
+    <h3>Total Appointments</h3>
+    <p>{{ stats.total_appointments }}</p>
+  </div>
+  <div class="card small">
+    <h3>Total Bills</h3>
+    <p>{{ stats.total_bills }}</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Recent Patients</h2>
+  {% if patients %}
+    <table class="table">
+      <thead><tr><th>#</th><th>Full name</th><th>Contact</th><th>Prescribed</th></tr></thead>
+      <tbody>
+        {% for p in patients %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ url_for('patient_details', patient_id=p.id) }}">{{ p.full_name }}</a></td>
+            <td>{{ p.contact or '-' }}</td>
+            <td>{{ p.prescribed_drug or '-' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No recent patients.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Recent Appointments</h2>
+  {% if appointments %}
+    <ul>
+      {% for a in appointments %}
+        <li>{{ a.patient.full_name if a.patient else 'Unknown' }} — {{ a.date }} {{ a.time }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No recent appointments.</p>
+  {% endif %}
+</div>
 {% endblock %}
