@@ -1,39 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-  <h2>Medical History</h2>
-  <form method="POST" action="{{ url_for('medical_history') }}">
-    <label>Patient</label>
-    <select class="form-control" name="patient_id" required>
-      <option value="">Select patient</option>
-      {% for p in patients %}
-        <option value="{{ p.id }}">{{ p.full_name }}</option>
-      {% endfor %}
-    </select>
-    <label>History details</label>
-    <textarea class="form-control" name="history" required></textarea>
-    <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Add History</button></div>
-  </form>
+<h2>Medical History</h2>
+<div class="mb-3">
+  <a class="btn btn-accent" href="{{ url_for('add_medical_history') }}">Add Medical History</a>
 </div>
 
-<div class="card">
-  <h3>All Medical Histories</h3>
+<div class="card p-3 card-custom">
   {% if histories %}
-    <table class="table">
-      <thead><tr><th>#</th><th>Patient</th><th>Details</th><th>Date</th></tr></thead>
-      <tbody>
-        {% for h in histories %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ h.patient.full_name if h.patient else 'Unknown' }}</td>
-            <td>{{ h.history }}</td>
-            <td>{{ h.created_at.strftime('%Y-%m-%d') }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <ul class="list-group">
+      {% for h in histories %}
+        <li class="list-group-item">
+          <strong>{{ h.patient.full_name if h.patient else 'Unknown' }}</strong>
+          <div class="small text-muted">{{ h.created_at.strftime('%Y-%m-%d %H:%M') if h.created_at else '' }}</div>
+          <div class="mt-2">{{ h.history }}</div>
+        </li>
+      {% endfor %}
+    </ul>
   {% else %}
-    <p>No medical history records yet.</p>
+    <p class="text-muted">No medical histories recorded.</p>
   {% endif %}
 </div>
 {% endblock %}
