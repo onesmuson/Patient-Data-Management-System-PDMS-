@@ -1,6 +1,12 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Reports</h1>
-<p>Reports and analytics will be shown here.</p>
+<div class="card">
+  <h2>Reports</h2>
+  {% for r in reports %}
+    <div style="margin-bottom:10px;">
+      <h4>{{ r.title }}</h4>
+      <p>{{ r.summary }}</p>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}
