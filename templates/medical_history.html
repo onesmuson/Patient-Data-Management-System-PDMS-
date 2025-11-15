@@ -1,6 +1,39 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Medical History</h1>
-<p>Patient medical history will be shown here.</p>
+<div class="card">
+  <h2>Medical History</h2>
+  <form method="POST" action="{{ url_for('medical_history') }}">
+    <label>Patient</label>
+    <select class="form-control" name="patient_id" required>
+      <option value="">Select patient</option>
+      {% for p in patients %}
+        <option value="{{ p.id }}">{{ p.full_name }}</option>
+      {% endfor %}
+    </select>
+    <label>History details</label>
+    <textarea class="form-control" name="history" required></textarea>
+    <div style="margin-top:10px;"><button class="btn btn-primary" type="submit">Add History</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>All Medical Histories</h3>
+  {% if histories %}
+    <table class="table">
+      <thead><tr><th>#</th><th>Patient</th><th>Details</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for h in histories %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ h.patient.full_name if h.patient else 'Unknown' }}</td>
+            <td>{{ h.history }}</td>
+            <td>{{ h.created_at.strftime('%Y-%m-%d') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No medical history records yet.</p>
+  {% endif %}
+</div>
 {% endblock %}
