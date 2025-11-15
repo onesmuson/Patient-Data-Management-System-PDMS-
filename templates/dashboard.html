@@ -1,79 +1,66 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row mb-4">
-  <div class="col-md-12">
-    <div class="card card-custom p-4 section-card">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <div class="welcome">Welcome back, <span style="color:var(--accent)">{{ username }}</span> 👋</div>
-          <div class="muted-small">Here's a snapshot of today — quick actions on the left.</div>
+
+<style>
+body {
+    background: linear-gradient(135deg, #4a148c, #880e4f);
+    color: white;
+}
+
+.card {
+    border-radius: 18px;
+    padding: 25px;
+    color: white;
+}
+
+.card-patients {
+    background: #0288d1;
+}
+
+.card-appointments {
+    background: #7b1fa2;
+}
+
+.card-bills {
+    background: #c2185b;
+}
+
+.big-title {
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.sub-title {
+    font-size: 22px;
+}
+</style>
+
+<div class="container mt-5">
+    <h1 class="big-title">Welcome, {{ username }} 👋</h1>
+    <p class="sub-title">Today is <strong>{{ today }}</strong></p>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card card-patients shadow">
+                <h3>Total Patients</h3>
+                <h1>{{ total_patients }}</h1>
+            </div>
         </div>
-        <div>
-          <small class="text-muted">Today: {{ (now()|default('')) }}</small>
+
+        <div class="col-md-4">
+            <div class="card card-appointments shadow">
+                <h3>Total Appointments</h3>
+                <h1>{{ total_appointments }}</h1>
+            </div>
         </div>
-      </div>
+
+        <div class="col-md-4">
+            <div class="card card-bills shadow">
+                <h3>Total Bills</h3>
+                <h1>{{ total_bills }}</h1>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
-<div class="row g-3">
-  <div class="col-md-3">
-    <div class="card card-patients p-3 card-custom section-card">
-      <h5 class="mb-0">Patients</h5>
-      <div class="big-num mt-2">{{ total_patients }}</div>
-      <small class="muted-small">Total registered patients</small>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card card-billing p-3 card-custom section-card">
-      <h5 class="mb-0">Medicines</h5>
-      <div class="big-num mt-2">{{ total_medicines }}</div>
-      <small class="muted-small">Inventory items</small>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card card-appointments p-3 card-custom section-card">
-      <h5 class="mb-0">Appointments</h5>
-      <div class="big-num mt-2">{{ total_appointments }}</div>
-      <small class="muted-small">Upcoming appointments</small>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card card-history p-3 card-custom section-card">
-      <h5 class="mb-0">Bills</h5>
-      <div class="big-num mt-2">{{ total_bills }}</div>
-      <small class="muted-small">Billing entries</small>
-    </div>
-  </div>
-</div>
-
-<div class="row mt-4">
-  <div class="col-md-6">
-    <div class="card p-3 card-custom">
-      <h5>Recent Patients</h5>
-      <ul class="list-group list-group-flush mt-2">
-        {% for p in patients %}
-          <li class="list-group-item">{{ p.full_name }} <span class="float-end text-muted">{{ p.contact or '-' }}</span></li>
-        {% else %}
-          <li class="list-group-item text-muted">No recent patients</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="card p-3 card-custom">
-      <h5>Recent Appointments</h5>
-      <ul class="list-group list-group-flush mt-2">
-        {% for a in appointments %}
-          <li class="list-group-item">{{ a.patient.full_name if a.patient else 'Unknown' }}
-            <div class="small text-muted">{{ a.date }} {{ a.time }}</div>
-          </li>
-        {% else %}
-          <li class="list-group-item text-muted">No appointments</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-</div>
 {% endblock %}
