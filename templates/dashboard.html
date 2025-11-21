@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Dashboard</h2>
+
+<p>Welcome to the Patient Data Management System Dashboard!</p>
+
+<a href="/add_patient">Add New Patient</a> |
+<a href="/view_patients">View Patients</a> |
+<a href="/reports">View Reports</a> |
+<a href="/logout">Logout</a>
+
+<hr>
+
+<h3>Patient Summary</h3>
+
+{% if patients %}
+<table border="1" cellspacing="0" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Diagnosis</th>
+        <th>Treatment</th>
+    </tr>
+    {% for patient in patients %}
+    <tr>
+        <td>{{ patient.id }}</td>
+        <td>{{ patient.full_name }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.gender }}</td>
+        <td>{{ patient.diagnosis }}</td>
+        <td>{{ patient.treatment }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No patients found. Please <a href="/add_patient">add a new patient</a>.</p>
+{% endif %}
+{% endblock %}

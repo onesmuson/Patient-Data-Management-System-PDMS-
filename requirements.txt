@@ -1,0 +1,15 @@
+Flask==2.2.5
+Flask-Login==0.6.2
+Flask-WTF==1.1.1
+SQLAlchemy==1.4.50
+WTForms==3.0.1
+pip install -r requirements.txt
+pip list
+mkdir static
+mkdir static\css
+mkdir static\js
+mkdir templates
+Flask
+Flask-SQLAlchemy
+gunicorn
+

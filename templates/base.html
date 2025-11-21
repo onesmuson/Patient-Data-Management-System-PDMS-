@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body style="background-color: #121212; color: white; font-family: Arial, sans-serif;">
+    <nav style="padding: 10px; background: #333; text-align: center;">
+        <a href="{{ url_for('dashboard') }}" style="color: white; margin: 10px;">Dashboard</a>
+        <a href="{{ url_for('add_patient') }}" style="color: white; margin: 10px;">Add Patient</a>
+        <a href="{{ url_for('logout') }}" style="color: white; margin: 10px;">Logout</a>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
