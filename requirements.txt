@@ -11,4 +11,4 @@ itsdangerous==2.2.0
 markupsafe==3.0.3
 greenlet==3.2.4
 typing-extensions==4.15.0
-gunicorn==23.2.0
+gunicorn==23.0.0
